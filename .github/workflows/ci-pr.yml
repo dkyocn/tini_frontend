@@ -1,0 +1,33 @@
+name: TINI FRONTEND CI - PR
+on:
+  pull_request:
+    branches: ["develop", "master"]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      # 1. 체크아웃
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      # Node.js 설정
+      - name: Set up Node.js 20
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      # 의존성 설치
+      - name: Install dependencies
+        run: npm ci
+
+      # TypeScript 타입 체크
+      - name: TypeScript type check
+        run: npx tsc --noEmit
+
+      # Metro 번들 빌드 체크
+      - name: Build check (Metro bundle)
+        run: npx react-native bundle --platform android --dev false --entry-file index.js --bundle-output /tmp/bundle.js
