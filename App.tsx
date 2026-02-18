@@ -34,7 +34,7 @@ export default function App() {
 
   return (
     <NavigationContainer>
-      {isLoggedIn ? <MainTabNavigator /> : <AuthStack onLoginSuccess={() => setIsLoggedIn(true)} />}
+      {isLoggedIn ? <MainTabNavigator onLogout={() => setIsLoggedIn(false)} /> : <AuthStack onLoginSuccess={() => setIsLoggedIn(true)} />}
     </NavigationContainer>
   );
 }
