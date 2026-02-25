@@ -1,6 +1,7 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, Alert} from 'react-native';
 import {login as kakaoLogin} from '@react-native-seoul/kakao-login';
+import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -14,11 +15,21 @@ type Props = {
 };
 
 export default function LoginSelect({onLoginSuccess}: Props) {
-  const [isLoading, setIsLoading] = useState(false);
+  const [loadingProvider, setLoadingProvider] = useState<'kakao' | 'google' | null>(null);
+
+  useEffect(() => {
+    GoogleSignin.configure({
+      webClientId:
+        '465749187993-d787pf2pfftffuf0m2l4fdiq8bed5bic.apps.googleusercontent.com',
+      iosClientId:
+        '465749187993-uh9hd2q0dv88sktt3e7a7te8mdqv11lp.apps.googleusercontent.com',
+      offlineAccess: true,
+    });
+  }, []);
 
   const handleKakaoLogin = async () => {
-    if (isLoading) return;
-    setIsLoading(true);
+    if (loadingProvider) return;
+    setLoadingProvider('kakao');
 
     try {
       const kakaoToken = await kakaoLogin();
@@ -39,12 +50,41 @@ export default function LoginSelect({onLoginSuccess}: Props) {
       console.error('카카오 로그인 실패:', error);
       Alert.alert('로그인 실패', '카카오 로그인에 실패했습니다. 다시 시도해주세요.');
     } finally {
-      setIsLoading(false);
+      setLoadingProvider(null);
     }
   };
 
-  const handleGoogleLogin = () => {
-    // TODO: 구글 소셜 로그인 구현
+  const handleGoogleLogin = async () => {
+    if (loadingProvider) return;
+    setLoadingProvider('google');
+
+    try {
+      await GoogleSignin.hasPlayServices();
+      const response = await GoogleSignin.signIn();
+      const idToken = response.data?.idToken;
+
+      if (!idToken) {
+        throw new Error('Google idToken을 받지 못했습니다.');
+      }
+
+      const backendResponse = await axios.post<TokenDTO>(
+        'http://localhost:8080/api/v1/tini/user/google/login',
+        {accessToken: idToken},
+      );
+
+      const {accessToken, refreshToken} = backendResponse.data;
+      await AsyncStorage.setItem('accessToken', accessToken);
+      if (refreshToken) {
+        await AsyncStorage.setItem('refreshToken', refreshToken);
+      }
+
+      onLoginSuccess();
+    } catch (error) {
+      console.error('구글 로그인 실패:', error);
+      Alert.alert('로그인 실패', '구글 로그인에 실패했습니다. 다시 시도해주세요.');
+    } finally {
+      setLoadingProvider(null);
+    }
   };
 
   const handleAppleLogin = () => {
@@ -57,18 +97,21 @@ export default function LoginSelect({onLoginSuccess}: Props) {
 
       <View style={styles.buttonContainer}>
         <TouchableOpacity
-          style={[styles.kakaoButton, isLoading && styles.disabledButton]}
+          style={[styles.kakaoButton, loadingProvider && styles.disabledButton]}
           onPress={handleKakaoLogin}
-          disabled={isLoading}>
+          disabled={!!loadingProvider}>
           <Text style={styles.kakaoButtonText}>
-            {isLoading ? '로그인 중...' : '카카오로 시작하기'}
+            {loadingProvider === 'kakao' ? '로그인 중...' : '카카오로 시작하기'}
           </Text>
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={styles.googleButton}
-          onPress={handleGoogleLogin}>
-          <Text style={styles.googleButtonText}>Google로 시작하기</Text>
+          style={[styles.googleButton, loadingProvider && styles.disabledButton]}
+          onPress={handleGoogleLogin}
+          disabled={!!loadingProvider}>
+          <Text style={styles.googleButtonText}>
+            {loadingProvider === 'google' ? '로그인 중...' : 'Google로 시작하기'}
+          </Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.appleButton} onPress={handleAppleLogin}>
