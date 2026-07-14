@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -10,14 +10,14 @@ import {
   Dimensions,
   Platform,
 } from 'react-native';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import DateTimePicker, {
   DateTimePickerEvent,
 } from '@react-native-community/datetimepicker';
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import TiniSvg from '../../assets/tini.svg';
 
-const {height} = Dimensions.get('window');
+const { height } = Dimensions.get('window');
 
 type Gender = 'FEMALE' | 'MALE' | 'NONBINARY' | 'SKIP';
 
@@ -37,9 +37,9 @@ const GENDER_LABELS: Record<Gender, string> = {
   SKIP: '선택 안함',
 };
 
-export default function ProfileInputPage({onNext}: Props) {
+export default function ProfileInputPage({ onNext }: Props) {
   const navigation = useNavigation();
-  const [nickname, setNickname] = useState('TINY');
+  const [nickname, setNickname] = useState('TINI');
   const [birthdate, setBirthdate] = useState<Date | null>(null);
   const [tempDate, setTempDate] = useState<Date>(new Date(2000, 0, 1));
   const [birthdateText, setBirthdateText] = useState('');
@@ -90,174 +90,192 @@ export default function ProfileInputPage({onNext}: Props) {
   };
 
   const handleNext = () => {
-    onNext({nickname, birthdate: birthdateText, gender});
+    onNext({ nickname, birthdate: birthdateText, gender });
   };
 
   return (
     <SafeAreaView style={styles.safeArea}>
-    <ScrollView
-      contentContainerStyle={styles.container}
-      keyboardShouldPersistTaps="handled">
-      {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.headerIcon}>
-          <TiniSvg width={20} height={20} />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>프로필 입력</Text>
-      </View>
-
-      {/* Mascot */}
-      <View style={styles.imageWrapper}>
-        <TiniSvg width={height * 0.2} height={height * 0.2} />
-      </View>
-
-      {/* Nickname */}
-      <View style={styles.fieldBlock}>
-        <View style={styles.labelRow}>
-          <Text style={styles.label}>닉네임</Text>
-          <Text style={styles.required}> (필수)</Text>
-        </View>
-        <TextInput
-          style={styles.textInput}
-          value={nickname}
-          onChangeText={setNickname}
-          placeholder="닉네임을 입력해주세요."
-          placeholderTextColor="#AAAAAA"
-        />
-        <View style={styles.divider} />
-      </View>
-
-      {/* Birthdate */}
-      <View style={styles.fieldBlock}>
-        <View style={styles.labelRow}>
-          <Text style={styles.label}>생년월일</Text>
-          <Text style={styles.required}> (필수)</Text>
-        </View>
-        <View style={styles.birthdateRow}>
-          <TextInput
-            style={styles.birthdateInput}
-            value={birthdateText}
-            onChangeText={handleBirthdateTextChange}
-            placeholder="0000.00.00"
-            placeholderTextColor="#AAAAAA"
-            keyboardType="number-pad"
-            maxLength={10}
-          />
+      <ScrollView
+        contentContainerStyle={styles.container}
+        keyboardShouldPersistTaps="handled"
+      >
+        {/* Header */}
+        <View style={styles.header}>
           <TouchableOpacity
-            style={styles.calendarButton}
-            onPress={() => setShowDatePicker(true)}>
-            <TiniSvg width={24} height={24} />
+            onPress={() => navigation.goBack()}
+            style={styles.headerIcon}
+          >
+            <TiniSvg width={20} height={20} />
           </TouchableOpacity>
+          <Text style={styles.headerTitle}>프로필 입력</Text>
         </View>
-        <View style={styles.divider} />
-      </View>
 
-      {/* Gender */}
-      <View style={styles.fieldBlock}>
-        <View style={styles.labelRow}>
-          <Text style={styles.label}>성별</Text>
-          <Text style={styles.optional}> (선택)</Text>
+        {/* Mascot */}
+        <View style={styles.imageWrapper}>
+          <TiniSvg width={height * 0.2} height={height * 0.2} />
         </View>
-        <TouchableOpacity
-          style={styles.dropdownTrigger}
-          onPress={() => setShowGenderModal(true)}>
-          <Text
-            style={gender ? styles.dropdownSelected : styles.dropdownPlaceholder}>
-            {gender ? GENDER_LABELS[gender] : '성별을 선택 해주세요.'}
-          </Text>
-        </TouchableOpacity>
-        <View style={styles.divider} />
-      </View>
 
-      <View style={styles.spacer} />
+        {/* Nickname */}
+        <View style={styles.fieldBlock}>
+          <View style={styles.labelRow}>
+            <Text style={styles.label}>닉네임</Text>
+            <Text style={styles.required}> (필수)</Text>
+          </View>
+          <TextInput
+            style={styles.textInput}
+            value={nickname}
+            onChangeText={setNickname}
+            placeholder="닉네임을 입력해주세요."
+            placeholderTextColor="#AAAAAA"
+          />
+          <View style={styles.divider} />
+        </View>
 
-      {/* Next button */}
-      <TouchableOpacity
-        style={styles.button}
-        onPress={handleNext}
-        activeOpacity={0.8}>
-        <Text style={styles.buttonText}>다음</Text>
-      </TouchableOpacity>
-
-      {/* Date Picker - Android: native dialog */}
-      {showDatePicker && Platform.OS === 'android' && (
-        <DateTimePicker
-          value={birthdate ?? new Date(2000, 0, 1)}
-          mode="date"
-          display="default"
-          onChange={handleDatePickerChange}
-          maximumDate={new Date()}
-        />
-      )}
-
-      {/* Date Picker - iOS: bottom sheet */}
-      <Modal
-        visible={showDatePicker && Platform.OS === 'ios'}
-        transparent
-        animationType="slide"
-        onRequestClose={() => setShowDatePicker(false)}>
-        <TouchableOpacity
-          style={styles.modalOverlay}
-          activeOpacity={1}
-          onPress={() => setShowDatePicker(false)}>
-          <View style={styles.bottomSheet}>
-            <View style={styles.bottomSheetHandle} />
-            <Text style={styles.bottomSheetTitle}>생년월일 선택</Text>
-            <DateTimePicker
-              value={tempDate}
-              mode="date"
-              display="spinner"
-              onChange={handleDatePickerChange}
-              maximumDate={new Date()}
-              locale="ko-KR"
-              style={styles.datePicker}
+        {/* Birthdate */}
+        <View style={styles.fieldBlock}>
+          <View style={styles.labelRow}>
+            <Text style={styles.label}>생년월일</Text>
+            <Text style={styles.required}> (필수)</Text>
+          </View>
+          <View style={styles.birthdateRow}>
+            <TextInput
+              style={styles.birthdateInput}
+              value={birthdateText}
+              onChangeText={handleBirthdateTextChange}
+              placeholder="0000.00.00"
+              placeholderTextColor="#AAAAAA"
+              keyboardType="number-pad"
+              maxLength={10}
             />
             <TouchableOpacity
-              style={styles.confirmButton}
-              onPress={confirmDateSelection}>
-              <Text style={styles.confirmButtonText}>확인</Text>
+              style={styles.calendarButton}
+              onPress={() => setShowDatePicker(true)}
+            >
+              <TiniSvg width={24} height={24} />
             </TouchableOpacity>
           </View>
-        </TouchableOpacity>
-      </Modal>
+          <View style={styles.divider} />
+        </View>
 
-      {/* Gender Bottom Sheet Modal */}
-      <Modal
-        visible={showGenderModal}
-        transparent
-        animationType="slide"
-        onRequestClose={() => setShowGenderModal(false)}>
-        <TouchableOpacity
-          style={styles.modalOverlay}
-          activeOpacity={1}
-          onPress={() => setShowGenderModal(false)}>
-          <View style={styles.bottomSheet}>
-            <View style={styles.bottomSheetHandle} />
-            <Text style={styles.bottomSheetTitle}>성별 선택</Text>
-            {GENDER_OPTIONS.map((option, index) => (
-              <TouchableOpacity
-                key={option}
-                style={[
-                  styles.dropdownItem,
-                  index < GENDER_OPTIONS.length - 1 && styles.dropdownItemBorder,
-                ]}
-                onPress={() => {
-                  setGender(option);
-                  setShowGenderModal(false);
-                }}>
-                <Text
-                  style={[
-                    styles.dropdownItemText,
-                    gender === option && styles.dropdownItemSelected,
-                  ]}>
-                  {GENDER_LABELS[option]}
-                </Text>
-              </TouchableOpacity>
-            ))}
+        {/* Gender */}
+        <View style={styles.fieldBlock}>
+          <View style={styles.labelRow}>
+            <Text style={styles.label}>성별</Text>
+            <Text style={styles.optional}> (선택)</Text>
           </View>
+          <TouchableOpacity
+            style={styles.dropdownTrigger}
+            onPress={() => setShowGenderModal(true)}
+          >
+            <Text
+              style={
+                gender ? styles.dropdownSelected : styles.dropdownPlaceholder
+              }
+            >
+              {gender ? GENDER_LABELS[gender] : '성별을 선택 해주세요.'}
+            </Text>
+          </TouchableOpacity>
+          <View style={styles.divider} />
+        </View>
+
+        <View style={styles.spacer} />
+
+        {/* Next button */}
+        <TouchableOpacity
+          style={styles.button}
+          onPress={handleNext}
+          activeOpacity={0.8}
+        >
+          <Text style={styles.buttonText}>다음</Text>
         </TouchableOpacity>
-      </Modal>
-    </ScrollView>
+
+        {/* Date Picker - Android: native dialog */}
+        {showDatePicker && Platform.OS === 'android' && (
+          <DateTimePicker
+            value={birthdate ?? new Date(2000, 0, 1)}
+            mode="date"
+            display="default"
+            onChange={handleDatePickerChange}
+            maximumDate={new Date()}
+          />
+        )}
+
+        {/* Date Picker - iOS: bottom sheet */}
+        <Modal
+          visible={showDatePicker && Platform.OS === 'ios'}
+          transparent
+          animationType="slide"
+          onRequestClose={() => setShowDatePicker(false)}
+        >
+          <TouchableOpacity
+            style={styles.modalOverlay}
+            activeOpacity={1}
+            onPress={() => setShowDatePicker(false)}
+          >
+            <View style={styles.bottomSheet}>
+              <View style={styles.bottomSheetHandle} />
+              <Text style={styles.bottomSheetTitle}>생년월일 선택</Text>
+              <DateTimePicker
+                value={tempDate}
+                mode="date"
+                display="spinner"
+                onChange={handleDatePickerChange}
+                maximumDate={new Date()}
+                locale="ko-KR"
+                style={styles.datePicker}
+              />
+              <TouchableOpacity
+                style={styles.confirmButton}
+                onPress={confirmDateSelection}
+              >
+                <Text style={styles.confirmButtonText}>확인</Text>
+              </TouchableOpacity>
+            </View>
+          </TouchableOpacity>
+        </Modal>
+
+        {/* Gender Bottom Sheet Modal */}
+        <Modal
+          visible={showGenderModal}
+          transparent
+          animationType="slide"
+          onRequestClose={() => setShowGenderModal(false)}
+        >
+          <TouchableOpacity
+            style={styles.modalOverlay}
+            activeOpacity={1}
+            onPress={() => setShowGenderModal(false)}
+          >
+            <View style={styles.bottomSheet}>
+              <View style={styles.bottomSheetHandle} />
+              <Text style={styles.bottomSheetTitle}>성별 선택</Text>
+              {GENDER_OPTIONS.map((option, index) => (
+                <TouchableOpacity
+                  key={option}
+                  style={[
+                    styles.dropdownItem,
+                    index < GENDER_OPTIONS.length - 1 &&
+                      styles.dropdownItemBorder,
+                  ]}
+                  onPress={() => {
+                    setGender(option);
+                    setShowGenderModal(false);
+                  }}
+                >
+                  <Text
+                    style={[
+                      styles.dropdownItemText,
+                      gender === option && styles.dropdownItemSelected,
+                    ]}
+                  >
+                    {GENDER_LABELS[option]}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </TouchableOpacity>
+        </Modal>
+      </ScrollView>
     </SafeAreaView>
   );
 }
