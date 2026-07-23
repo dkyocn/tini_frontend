@@ -16,6 +16,8 @@ buildscript {
         classpath("com.android.tools.build:gradle")
         classpath("com.facebook.react:react-native-gradle-plugin")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin")
+        // TEMP: Firebase 비활성화 (카카오 로그인 테스트용)
+        // classpath("com.google.gms:google-services:4.4.2")
     }
 }
 

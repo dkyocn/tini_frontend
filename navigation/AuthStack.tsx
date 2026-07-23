@@ -27,13 +27,18 @@ export default function AuthStack({onLoginSuccess}: Props) {
       <Stack.Screen name="LoginSelect">
         {({navigation}) => (
           <LoginSelect
-            onLoginSuccess={() => navigation.navigate('ProfileInput')}
+            onLoginSuccess={initialProfile =>
+              navigation.navigate('ProfileInput', initialProfile)
+            }
           />
         )}
       </Stack.Screen>
       <Stack.Screen name="ProfileInput">
-        {({navigation}) => (
-          <ProfileInputPage onNext={() => navigation.navigate('SignUpComplete')} />
+        {({navigation, route}) => (
+          <ProfileInputPage
+            initialProfile={route.params}
+            onNext={() => navigation.navigate('SignUpComplete')}
+          />
         )}
       </Stack.Screen>
       <Stack.Screen name="SignUpComplete">

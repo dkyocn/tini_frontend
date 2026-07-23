@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import {
+  Alert,
   View,
   Text,
   TextInput,
@@ -15,13 +16,20 @@ import DateTimePicker, {
   DateTimePickerEvent,
 } from '@react-native-community/datetimepicker';
 import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 import TiniSvg from '../../assets/tini.svg';
+import { API_BASE_URL } from '../../utils/api';
 
 const { height } = Dimensions.get('window');
 
 type Gender = 'FEMALE' | 'MALE' | 'NONBINARY' | 'SKIP';
 
 type Props = {
+  initialProfile?: {
+    birthdate?: string;
+    gender?: Exclude<Gender, 'SKIP'>;
+  };
   onNext: (data: {
     nickname: string;
     birthdate: string;
@@ -37,13 +45,17 @@ const GENDER_LABELS: Record<Gender, string> = {
   SKIP: '선택 안함',
 };
 
-export default function ProfileInputPage({ onNext }: Props) {
+export default function ProfileInputPage({ initialProfile, onNext }: Props) {
   const navigation = useNavigation();
-  const [nickname, setNickname] = useState('TINI');
+  const [nickname, setNickname] = useState('');
   const [birthdate, setBirthdate] = useState<Date | null>(null);
   const [tempDate, setTempDate] = useState<Date>(new Date(2000, 0, 1));
-  const [birthdateText, setBirthdateText] = useState('');
-  const [gender, setGender] = useState<Gender | null>(null);
+  const [birthdateText, setBirthdateText] = useState(
+    initialProfile?.birthdate ?? '',
+  );
+  const [gender, setGender] = useState<Gender | null>(
+    initialProfile?.gender ?? null,
+  );
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showGenderModal, setShowGenderModal] = useState(false);
 
@@ -52,6 +64,14 @@ export default function ProfileInputPage({ onNext }: Props) {
     const m = String(date.getMonth() + 1).padStart(2, '0');
     const d = String(date.getDate()).padStart(2, '0');
     return `${y}.${m}.${d}`;
+  };
+
+  const parseBirthdateText = (text: string): Date | null => {
+    const match = text.match(/^(\d{4})\.(\d{2})\.(\d{2})$/);
+    if (!match) return null;
+    const [, y, m, d] = match;
+    const date = new Date(Number(y), Number(m) - 1, Number(d));
+    return Number.isNaN(date.getTime()) ? null : date;
   };
 
   const handleBirthdateTextChange = (text: string) => {
@@ -89,8 +109,29 @@ export default function ProfileInputPage({ onNext }: Props) {
     setShowDatePicker(false);
   };
 
-  const handleNext = () => {
-    onNext({ nickname, birthdate: birthdateText, gender });
+  const handleNext = async () => {
+    try {
+      const accessToken = await AsyncStorage.getItem('accessToken');
+      const refreshToken = await AsyncStorage.getItem('refreshToken');
+      await axios.patch(
+        `${API_BASE_URL}/user/profile`,
+        {
+          nickname,
+          birthdate: birthdateText ? birthdateText.replace(/\./g, '-') : undefined,
+          gender: gender && gender !== 'SKIP' ? gender : undefined,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            RefreshToken: refreshToken ?? '',
+          },
+        },
+      );
+      onNext({ nickname, birthdate: birthdateText, gender });
+    } catch (error) {
+      console.error('프로필 저장 실패:', error);
+      Alert.alert('오류', '프로필 저장에 실패했습니다. 다시 시도해주세요.');
+    }
   };
 
   return (
@@ -149,7 +190,14 @@ export default function ProfileInputPage({ onNext }: Props) {
             />
             <TouchableOpacity
               style={styles.calendarButton}
-              onPress={() => setShowDatePicker(true)}
+              onPress={() => {
+                const parsed = parseBirthdateText(birthdateText);
+                if (parsed) {
+                  setTempDate(parsed);
+                  setBirthdate(parsed);
+                }
+                setShowDatePicker(true);
+              }}
             >
               <TiniSvg width={24} height={24} />
             </TouchableOpacity>
@@ -222,6 +270,7 @@ export default function ProfileInputPage({ onNext }: Props) {
                 onChange={handleDatePickerChange}
                 maximumDate={new Date()}
                 locale="ko-KR"
+                themeVariant="light"
                 style={styles.datePicker}
               />
               <TouchableOpacity
