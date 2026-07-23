@@ -33,7 +33,7 @@ export async function saveFcmToken(accessToken: string): Promise<void> {
 
 // 토큰 갱신 구독 (App.tsx에서 호출)
 export function subscribeFcmTokenRefresh(): () => void {
-  return messaging().onTokenRefresh(async newToken => {
+  return messaging().onTokenRefresh(async (newToken: string) => {
     try {
       await AsyncStorage.setItem('fcmToken', newToken);
       const accessToken = await AsyncStorage.getItem('accessToken');
