@@ -2,6 +2,7 @@ import React from 'react';
 import {View, Text, TouchableOpacity, Alert, StyleSheet} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import {API_BASE_URL} from '../utils/api';
 
 type Props = {
   onLogout: () => void;
@@ -11,7 +12,7 @@ export default function MainTabNavigator({onLogout}: Props) {
   const handleLogout = async () => {
     try {
       const accessToken = await AsyncStorage.getItem('accessToken');
-      await axios.post('http://localhost:8080/api/v1/tini/logout', null, {
+      await axios.post(`${API_BASE_URL}/logout`, null, {
         headers: {Authorization: `Bearer ${accessToken}`},
       });
     } catch (error) {

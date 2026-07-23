@@ -4,6 +4,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import AuthStack from './navigation/AuthStack';
 import MainTabNavigator from './navigation/MainTabNavigator';
+// TEMP: Firebase 비활성화 (카카오 로그인 테스트용)
+// import { subscribeFcmTokenRefresh } from './utils/fcm';
 
 export default function App() {
   const [isLoading, setIsLoading] = useState(true);
@@ -13,7 +15,6 @@ export default function App() {
     const checkLoginStatus = async () => {
       try {
         const accessToken = await AsyncStorage.getItem('accessToken');
-        // 더 엄격하게 하려면 refreshToken도 확인하거나, 토큰 유효성 검사 API 호출 가능
         setIsLoggedIn(!!accessToken);
       } catch (e) {
         console.error('로그인 상태 확인 실패', e);
@@ -23,6 +24,11 @@ export default function App() {
     };
 
     checkLoginStatus();
+
+    // FCM 토큰이 갱신될 때 자동으로 백엔드에 업데이트
+    // TEMP: Firebase 비활성화 (카카오 로그인 테스트용)
+    // const unsubscribe = subscribeFcmTokenRefresh();
+    // return () => unsubscribe();
   }, []);
 
   if (isLoading) {
