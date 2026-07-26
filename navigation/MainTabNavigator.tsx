@@ -11,7 +11,7 @@ export default function MainTabNavigator({onLogout}: Props) {
   const handleLogout = async () => {
     try {
       const accessToken = await AsyncStorage.getItem('accessToken');
-      await axios.post('http://localhost:8080/api/v1/tini/logout', null, {
+      await axios.post('http://172.20.10.2:8080/api/v1/tini/logout', null, {
         headers: {Authorization: `Bearer ${accessToken}`},
       });
     } catch (error) {

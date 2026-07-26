@@ -4,8 +4,13 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import AuthStack from './navigation/AuthStack';
 import MainTabNavigator from './navigation/MainTabNavigator';
+import ComponentPreview from './pages/ComponentPreview';
+
+const PREVIEW_COMPONENTS = false;
 
 export default function App() {
+  if (PREVIEW_COMPONENTS) return <ComponentPreview />;
+
   const [isLoading, setIsLoading] = useState(true);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 

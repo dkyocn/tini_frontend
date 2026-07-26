@@ -1,7 +1,7 @@
-import React, {useState, useEffect} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet, Alert} from 'react-native';
-import {login as kakaoLogin} from '@react-native-seoul/kakao-login';
-import {GoogleSignin} from '@react-native-google-signin/google-signin';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { loginWithKakaoAccount as kakaoLogin } from '@react-native-seoul/kakao-login';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -14,8 +14,10 @@ type Props = {
   onLoginSuccess: () => void;
 };
 
-export default function LoginSelect({onLoginSuccess}: Props) {
-  const [loadingProvider, setLoadingProvider] = useState<'kakao' | 'google' | null>(null);
+export default function LoginSelect({ onLoginSuccess }: Props) {
+  const [loadingProvider, setLoadingProvider] = useState<
+    'kakao' | 'google' | null
+  >(null);
 
   useEffect(() => {
     GoogleSignin.configure({
@@ -28,28 +30,44 @@ export default function LoginSelect({onLoginSuccess}: Props) {
   }, []);
 
   const handleKakaoLogin = async () => {
-    if (loadingProvider) return;
+    console.log('[KAKAO] 1 handleKakaoLogin called, loadingProvider=', loadingProvider);
+    if (loadingProvider) {
+      console.log('[KAKAO] 1a early-return (already loading)');
+      return;
+    }
     setLoadingProvider('kakao');
+    console.log('[KAKAO] 2 loadingProvider set to kakao, about to await kakaoLogin()');
 
     try {
       const kakaoToken = await kakaoLogin();
+      console.log('[KAKAO] 3 kakaoLogin resolved, token=', JSON.stringify(kakaoToken));
 
+      console.log('[KAKAO] 4 calling backend...');
       const response = await axios.post<TokenDTO>(
-        'http://localhost:8080/api/v1/tini/user/kakao/login',
-        {accessToken: kakaoToken.accessToken},
+        'http://172.20.10.2:8080/api/v1/tini/user/kakao/login',
+        { accessToken: kakaoToken.accessToken },
+        { timeout: 10000 },
       );
+      console.log('[KAKAO] 5 backend responded status=', response.status);
 
-      const {accessToken, refreshToken} = response.data;
+      const { accessToken, refreshToken } = response.data;
       await AsyncStorage.setItem('accessToken', accessToken);
       if (refreshToken) {
         await AsyncStorage.setItem('refreshToken', refreshToken);
       }
+      console.log('[KAKAO] 6 tokens saved, calling onLoginSuccess()');
 
       onLoginSuccess();
     } catch (error) {
+      console.log('[KAKAO] X caught error:', error);
       console.error('카카오 로그인 실패:', error);
-      Alert.alert('로그인 실패', '카카오 로그인에 실패했습니다. 다시 시도해주세요.');
+      Alert.alert(
+        '로그인 실패',
+        '카카오 로그인에 실패했습니다. 다시 시도해주세요.',
+      );
+      console.log('[KAKAO] X Alert.alert called');
     } finally {
+      console.log('[KAKAO] Y finally: setLoadingProvider(null)');
       setLoadingProvider(null);
     }
   };
@@ -68,11 +86,11 @@ export default function LoginSelect({onLoginSuccess}: Props) {
       }
 
       const backendResponse = await axios.post<TokenDTO>(
-        'http://localhost:8080/api/v1/tini/user/google/login',
-        {accessToken: idToken},
+        'http://172.20.10.2:8080/api/v1/tini/user/google/login',
+        { accessToken: idToken },
       );
 
-      const {accessToken, refreshToken} = backendResponse.data;
+      const { accessToken, refreshToken } = backendResponse.data;
       await AsyncStorage.setItem('accessToken', accessToken);
       if (refreshToken) {
         await AsyncStorage.setItem('refreshToken', refreshToken);
@@ -81,7 +99,10 @@ export default function LoginSelect({onLoginSuccess}: Props) {
       onLoginSuccess();
     } catch (error) {
       console.error('구글 로그인 실패:', error);
-      Alert.alert('로그인 실패', '구글 로그인에 실패했습니다. 다시 시도해주세요.');
+      Alert.alert(
+        '로그인 실패',
+        '구글 로그인에 실패했습니다. 다시 시도해주세요.',
+      );
     } finally {
       setLoadingProvider(null);
     }
@@ -99,18 +120,25 @@ export default function LoginSelect({onLoginSuccess}: Props) {
         <TouchableOpacity
           style={[styles.kakaoButton, loadingProvider && styles.disabledButton]}
           onPress={handleKakaoLogin}
-          disabled={!!loadingProvider}>
+          disabled={!!loadingProvider}
+        >
           <Text style={styles.kakaoButtonText}>
             {loadingProvider === 'kakao' ? '로그인 중...' : '카카오로 시작하기'}
           </Text>
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={[styles.googleButton, loadingProvider && styles.disabledButton]}
+          style={[
+            styles.googleButton,
+            loadingProvider && styles.disabledButton,
+          ]}
           onPress={handleGoogleLogin}
-          disabled={!!loadingProvider}>
+          disabled={!!loadingProvider}
+        >
           <Text style={styles.googleButtonText}>
-            {loadingProvider === 'google' ? '로그인 중...' : 'Google로 시작하기'}
+            {loadingProvider === 'google'
+              ? '로그인 중...'
+              : 'Google로 시작하기'}
           </Text>
         </TouchableOpacity>
 
@@ -127,7 +155,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: '#F6F6F9',
     paddingHorizontal: 24,
   },
   title: {
