@@ -45,23 +45,33 @@ export default function LoginSelect({ onLoginSuccess }: Props) {
   }, []);
 
   const handleKakaoLogin = async () => {
-    if (loadingProvider) return;
+    console.log('[KAKAO] 1 handleKakaoLogin called, loadingProvider=', loadingProvider);
+    if (loadingProvider) {
+      console.log('[KAKAO] 1a early-return (already loading)');
+      return;
+    }
     setLoadingProvider('kakao');
+    console.log('[KAKAO] 2 loadingProvider set to kakao, about to await kakaoLogin()');
 
     try {
       const kakaoToken = await kakaoLogin();
+      console.log('[KAKAO] 3 kakaoLogin resolved, token=', JSON.stringify(kakaoToken));
 
+      console.log('[KAKAO] 4 calling backend...');
       const response = await axios.post<TokenDTO>(
         `${API_BASE_URL}/user/kakao/login`,
         { accessToken: kakaoToken.accessToken },
         { timeout: 8000 },
       );
+      console.log('[KAKAO] 5 backend responded status=', response.status);
+
 
       const { accessToken, refreshToken, user } = response.data;
       await AsyncStorage.setItem('accessToken', accessToken);
       if (refreshToken) {
         await AsyncStorage.setItem('refreshToken', refreshToken);
       }
+
       // TEMP: Firebase 비활성화 (카카오 로그인 테스트용)
       // await saveFcmToken(accessToken);
 
@@ -74,12 +84,15 @@ export default function LoginSelect({ onLoginSuccess }: Props) {
         gender: user?.userGender ?? undefined,
       });
     } catch (error) {
+      console.log('[KAKAO] X caught error:', error);
       console.error('카카오 로그인 실패:', error);
       Alert.alert(
         '로그인 실패',
         '카카오 로그인에 실패했습니다. 다시 시도해주세요.',
       );
+
     } finally {
+      console.log('[KAKAO] Y finally: setLoadingProvider(null)');
       setLoadingProvider(null);
     }
   };
