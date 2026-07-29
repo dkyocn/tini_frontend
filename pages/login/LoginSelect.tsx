@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Alert, Platform } from 'react-native';
 import { login as kakaoLogin } from '@react-native-seoul/kakao-login';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import axios from 'axios';
@@ -189,9 +189,11 @@ export default function LoginSelect({ onLoginSuccess }: Props) {
           </Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.appleButton} onPress={handleAppleLogin}>
-          <Text style={styles.appleButtonText}>Apple로 시작하기</Text>
-        </TouchableOpacity>
+        {Platform.OS === 'ios' && (
+          <TouchableOpacity style={styles.appleButton} onPress={handleAppleLogin}>
+            <Text style={styles.appleButtonText}>Apple로 시작하기</Text>
+          </TouchableOpacity>
+        )}
       </View>
     </View>
   );
