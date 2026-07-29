@@ -17,9 +17,7 @@ import TiniFrame from '../../../assets/images/tiniFrame.svg';
 import { colors, fonts } from '../theme';
 
 // 피그마 에셋 — 7일 후 만료, 로컬 asset으로 교체
-const imgTiny = require('../../../assets/images/tini-ui/a538490c-b729-4d5a-bc05-8c3bab180775.png');
-// 피그마 에셋 — 7일 후 만료, 로컬 asset으로 교체
-const imgVector = require('../../../assets/images/tini-ui/821b9407-e0a4-47ba-bd31-89d194615e6c.png');
+import ImgVector from '../../../assets/images/tini-ui/821b9407-e0a4-47ba-bd31-89d194615e6c.svg';
 
 type Props = {
   onPressShop?: () => void;
@@ -38,7 +36,7 @@ export default function RecoveryPenModal({ onPressShop }: Props) {
       </View>
 
       {/* 장식용 벡터 (회전) */}
-      <Image source={imgVector} style={styles.vector} resizeMode="contain" />
+      <ImgVector style={styles.vector} />
 
       <Text style={styles.desc}>
         {'다이어리 연속 작성 중 \n하루를 놓쳤을 때 복구펜을 보유한 상태라면\n기록을 유지할 수 있어요!'}

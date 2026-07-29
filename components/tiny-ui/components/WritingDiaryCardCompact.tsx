@@ -15,8 +15,8 @@ import { View, Text, Image, StyleSheet } from 'react-native';
 import { colors, fonts } from '../theme';
 
 // 피그마 에셋 — 7일 후 만료, 로컬 asset으로 교체
-const imgAddIcon = require('../../../assets/images/tini-ui/9299565d-4d31-43c9-acd5-10fb2a08c6ca.png');
-const imgGroup = require('../../../assets/images/tini-ui/144be2b7-da8a-436e-be09-3bacc36f9d61.png');
+import ImgAddIcon from '../../../assets/images/tini-ui/9299565d-4d31-43c9-acd5-10fb2a08c6ca.svg';
+import ImgGroup from '../../../assets/images/tini-ui/144be2b7-da8a-436e-be09-3bacc36f9d61.svg';
 
 export default function WritingDiaryCardCompact() {
   const bars = [18, 83, 148, 213];
@@ -27,11 +27,11 @@ export default function WritingDiaryCardCompact() {
       ))}
 
       <View style={styles.addBox}>
-        <Image source={imgAddIcon} style={styles.addIcon} resizeMode="contain" />
+        <ImgAddIcon style={styles.addIcon} />
       </View>
 
       <Text style={styles.title}>작성중인 다이어리</Text>
-      <Image source={imgGroup} style={styles.groupIcon} resizeMode="contain" />
+      <ImgGroup style={styles.groupIcon} />
     </View>
   );
 }

@@ -11,7 +11,7 @@ import { View, Text, Image, StyleSheet } from 'react-native';
 import { colors, fonts } from '../theme';
 
 // 피그마 에셋 — 7일 후 만료, 로컬 asset으로 교체
-const imgLine269 = require('../../../assets/images/tini-ui/d08be608-ed75-45c9-b3b9-2a820cf75439.png');
+import ImgLine269 from '../../../assets/images/tini-ui/d08be608-ed75-45c9-b3b9-2a820cf75439.svg';
 
 type Field = {
   label: string;
@@ -43,7 +43,7 @@ export default function ProfileInfoForm() {
               {f.value}
             </Text>
           </View>
-          <Image source={imgLine269} style={styles.divider} resizeMode="stretch" />
+          <ImgLine269 style={styles.divider} />
         </View>
       ))}
     </View>

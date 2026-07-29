@@ -11,7 +11,7 @@ import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import { colors, fonts } from '../theme';
 
 // 피그마 에셋 — 7일 후 만료, 로컬 asset으로 교체
-const imgEllipse2188 = require('../../../assets/images/tini-ui/3b31ef1d-a8e5-4d9e-873a-cc2f1c28caae.png');
+import ImgEllipse2188 from '../../../assets/images/tini-ui/3b31ef1d-a8e5-4d9e-873a-cc2f1c28caae.svg';
 
 type CreatePostHeaderProps = {
   title?: string;
@@ -29,7 +29,9 @@ export default function CreatePostHeader({
     <View style={styles.container}>
       <View style={styles.row}>
         <View style={styles.left}>
-          <Image source={imgEllipse2188} style={styles.avatar} />
+          <View style={styles.avatar}>
+            <ImgEllipse2188 width={30} height={30} />
+          </View>
           <Text style={styles.title}>{title}</Text>
         </View>
         <TouchableOpacity style={styles.button} onPress={onPressAction}>

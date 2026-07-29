@@ -20,10 +20,10 @@ import RecoveryPenModal from './RecoveryPenModal';
 
 // 피그마 에셋 — 7일 후 만료, 로컬 asset으로 교체
 const imgClover = require('../../../assets/images/tini-ui/517731c9-8a29-411d-8ebe-d95b1a93fb77.png');
-const imgArrowLeft = require('../../../assets/images/tini-ui/50cbfa2a-40e8-4ac7-9a10-c63f8e36c4a1.png');
-const imgArrowRight = require('../../../assets/images/tini-ui/9259d871-e44a-4d10-9678-1d841d71cfe5.png');
-const imgEdit = require('../../../assets/images/tini-ui/4e8a2886-2e2b-4d91-ae0a-2974a26545d2.png');
-const imgLine266 = require('../../../assets/images/tini-ui/9d674988-f584-4902-89cc-12b3a1cb1e7f.png');
+import ImgArrowLeft from '../../../assets/images/tini-ui/50cbfa2a-40e8-4ac7-9a10-c63f8e36c4a1.svg';
+import ImgArrowRight from '../../../assets/images/tini-ui/9259d871-e44a-4d10-9678-1d841d71cfe5.svg';
+import ImgEdit from '../../../assets/images/tini-ui/4e8a2886-2e2b-4d91-ae0a-2974a26545d2.svg';
+import ImgLine266 from '../../../assets/images/tini-ui/9d674988-f584-4902-89cc-12b3a1cb1e7f.svg';
 
 const WEEKDAYS = ['일', '월', '화', '수', '목', '금', '토'];
 
@@ -74,9 +74,9 @@ export default function StreakCalendarCard() {
         <View style={styles.monthRow}>
           <View style={styles.checkboxLight} />
           <View style={styles.monthNav}>
-            <Image source={imgArrowLeft} style={styles.arrow} resizeMode="contain" />
+            <ImgArrowLeft style={styles.arrow} />
             <Text style={styles.monthText}>2026.06</Text>
-            <Image source={imgArrowRight} style={styles.arrow} resizeMode="contain" />
+            <ImgArrowRight style={styles.arrow} />
           </View>
         </View>
 
@@ -105,7 +105,7 @@ export default function StreakCalendarCard() {
             <View style={[styles.statContent, { left: 184 }]}>
               <Text style={styles.statLabelMint}>복구펜 보유수</Text>
               <View style={styles.statValueRow}>
-                <Image source={imgEdit} style={styles.statIcon} resizeMode="contain" />
+                <ImgEdit style={styles.statIcon} />
                 <View style={styles.valueGroup}>
                   <Text style={styles.valueBig}>41</Text>
                   <Text style={styles.valueUnit}>개</Text>
@@ -128,7 +128,7 @@ export default function StreakCalendarCard() {
                   <Text key={d} style={styles.weekday}>{d}</Text>
                 ))}
               </View>
-              <Image source={imgLine266} style={styles.calLine} resizeMode="stretch" />
+              <ImgLine266 style={styles.calLine} />
             </View>
 
             {/* 날짜 그리드 */}

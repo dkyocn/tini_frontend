@@ -17,7 +17,7 @@ import { View, Text, Image, StyleSheet } from 'react-native';
 import { colors, fonts } from '../theme';
 
 // 피그마 에셋 — 7일 후 만료, 로컬 asset으로 교체
-const imgHeaderIcon = require('../../../assets/images/tini-ui/e0bcc76e-c902-40f4-8fd7-fd64d5be82b1.png');
+import ImgHeaderIcon from '../../../assets/images/tini-ui/e0bcc76e-c902-40f4-8fd7-fd64d5be82b1.svg';
 
 function DiaryBook() {
   return (
@@ -53,7 +53,7 @@ export default function DiaryShelfScreen() {
         <View style={styles.backIcon} />
         <View style={styles.headerRight}>
           <Text style={styles.title}>다이어리</Text>
-          <Image source={imgHeaderIcon} style={styles.headerIcon} resizeMode="contain" />
+          <ImgHeaderIcon style={styles.headerIcon} />
         </View>
       </View>
     </View>

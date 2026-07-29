@@ -12,7 +12,7 @@ import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import { colors, fonts } from '../theme';
 
 // 피그마 에셋 — 7일 후 만료, 로컬 asset으로 교체
-const imgEllipse2176 = require('../../../assets/images/tini-ui/3acad251-dd66-4e9b-b540-c77f0964d501.png');
+import ImgEllipse2176 from '../../../assets/images/tini-ui/3acad251-dd66-4e9b-b540-c77f0964d501.svg';
 
 type AchievementMethodCardProps = {
   onPressGo?: () => void;
@@ -24,7 +24,9 @@ export default function AchievementMethodCard({ onPressGo }: AchievementMethodCa
       <Text style={styles.header}>달성 방법</Text>
       <View style={styles.checkbox} />
 
-      <Image source={imgEllipse2176} style={styles.badge} />
+      <View style={styles.badge}>
+        <ImgEllipse2176 width={120} height={120} />
+      </View>
 
       <Text style={styles.achievementName}>1짱 다독가</Text>
 

@@ -13,17 +13,17 @@ import { View, Text, Image, StyleSheet } from 'react-native';
 import { colors, fonts } from '../theme';
 
 // 피그마 에셋 — 7일 후 만료, 로컬 asset으로 교체
-const imgFrame = require('../../../assets/images/tini-ui/5718636e-fc4e-4efe-a668-5405b73d08e4.png');
-const imgVector = require('../../../assets/images/tini-ui/455ebf82-8b88-4fad-800b-f95323f3e038.png');
+import ImgFrame from '../../../assets/images/tini-ui/5718636e-fc4e-4efe-a668-5405b73d08e4.svg';
+import ImgVector from '../../../assets/images/tini-ui/455ebf82-8b88-4fad-800b-f95323f3e038.svg';
 
 export default function TextFormatToolbar() {
   return (
     <View style={styles.bar}>
       <View style={styles.row}>
         <Text style={styles.aa}>Aa</Text>
-        <Image source={imgFrame} style={styles.frameIcon} resizeMode="contain" />
+        <ImgFrame style={styles.frameIcon} />
         <Text style={styles.bold}>B</Text>
-        <Image source={imgVector} style={styles.vector} resizeMode="contain" />
+        <ImgVector style={styles.vector} />
       </View>
     </View>
   );
