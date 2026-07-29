@@ -19,7 +19,7 @@ import { colors, fonts } from '../theme';
 
 // 피그마 에셋 — 7일 후 만료, 로컬 asset으로 교체
 const imgBookCover = require('../../../assets/images/tini-ui/0baafee3-d45c-4ca4-8337-729d44cab5b5.png');
-const imgHeaderIcon = require('../../../assets/images/tini-ui/6d697e03-5a5c-4ec7-9320-3e51e3ab698a.png');
+import ImgHeaderIcon from '../../../assets/images/tini-ui/6d697e03-5a5c-4ec7-9320-3e51e3ab698a.svg';
 
 function BookCover() {
   return (
@@ -55,7 +55,7 @@ export default function BookshelfScreen() {
         <View style={styles.backIcon} />
         <View style={styles.headerRight}>
           <Text style={styles.title}>내 책장</Text>
-          <Image source={imgHeaderIcon} style={styles.headerIcon} resizeMode="contain" />
+          <ImgHeaderIcon style={styles.headerIcon} />
         </View>
       </View>
     </View>

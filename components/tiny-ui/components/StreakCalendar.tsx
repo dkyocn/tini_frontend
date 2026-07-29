@@ -22,10 +22,10 @@ import { colors, fonts } from '../theme';
 const imgClover = require('../../../assets/images/tini-ui/038f09cb-c482-415d-8e69-31d1c2497623.png');
 const imgStamp4817 = require('../../../assets/images/tini-ui/0f506290-95a3-4b7c-83ce-5ab1892ab49e.png');
 const imgStamp4818 = require('../../../assets/images/tini-ui/b07a713e-9de9-4ebb-9165-63a321a9bcc2.png');
-const imgArrowLeft = require('../../../assets/images/tini-ui/cb283c80-54fa-4c1a-81ea-87d91b3f0c54.png');
-const imgArrowRight = require('../../../assets/images/tini-ui/fd1303a8-8432-42e7-a4c3-3b6a88e33333.png');
-const imgEdit = require('../../../assets/images/tini-ui/6cbb8a63-bdf5-465f-aa1c-853597880f0f.png');
-const imgLine = require('../../../assets/images/tini-ui/1c5c468d-cb4a-4de2-9802-99f9606b9777.png');
+import ImgArrowLeft from '../../../assets/images/tini-ui/cb283c80-54fa-4c1a-81ea-87d91b3f0c54.svg';
+import ImgArrowRight from '../../../assets/images/tini-ui/fd1303a8-8432-42e7-a4c3-3b6a88e33333.svg';
+import ImgEdit from '../../../assets/images/tini-ui/6cbb8a63-bdf5-465f-aa1c-853597880f0f.svg';
+import ImgLine from '../../../assets/images/tini-ui/1c5c468d-cb4a-4de2-9802-99f9606b9777.svg';
 
 const WEEKDAYS = ['일', '월', '화', '수', '목', '금', '토'];
 
@@ -59,9 +59,9 @@ export default function StreakCalendar() {
       <View style={styles.header}>
         <View style={styles.checkbox} />
         <View style={styles.monthNav}>
-          <Image source={imgArrowLeft} style={styles.arrow} resizeMode="contain" />
+          <ImgArrowLeft style={styles.arrow} />
           <Text style={styles.monthText}>2026.06</Text>
-          <Image source={imgArrowRight} style={styles.arrow} resizeMode="contain" />
+          <ImgArrowRight style={styles.arrow} />
         </View>
       </View>
 
@@ -84,7 +84,7 @@ export default function StreakCalendar() {
         <View style={[styles.statCol, { left: 184 }]}>
           <Text style={[styles.statLabel, { color: '#25eeba' }]}>복구펜 보유수</Text>
           <View style={styles.statRow}>
-            <Image source={imgEdit} style={styles.statIcon} resizeMode="contain" />
+            <ImgEdit style={styles.statIcon} />
             <View style={styles.statValue}>
               <Text style={styles.statNumber}>41</Text>
               <Text style={styles.statUnit}>개</Text>
@@ -101,7 +101,7 @@ export default function StreakCalendar() {
             <Text key={d} style={styles.weekday}>{d}</Text>
           ))}
         </View>
-        <Image source={imgLine} style={styles.line} resizeMode="stretch" />
+        <ImgLine style={styles.line} />
       </View>
 
       {/* 캘린더 그리드 */}

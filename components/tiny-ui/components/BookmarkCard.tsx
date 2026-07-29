@@ -12,7 +12,7 @@ import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import { colors, fonts } from '../theme';
 
 // 피그마 에셋 — 7일 후 만료, 로컬 asset으로 교체
-const imgVector3 = require('../../../assets/images/tini-ui/c7dedbe2-2ac0-4786-b5d8-40f3a401b156.png'); // 탭 구분선
+import ImgVector3 from '../../../assets/images/tini-ui/c7dedbe2-2ac0-4786-b5d8-40f3a401b156.svg'; // 탭 구분선
 
 const ROWS_TOP = [121, 275];
 
@@ -33,7 +33,7 @@ export default function BookmarkCard({
       {/* 좌측 탭: 인덱스 (+ 밑줄) */}
       <View style={styles.tabLeft}>
         <Text style={styles.tabText}>인덱스</Text>
-        <Image source={imgVector3} style={styles.tabUnderline} resizeMode="stretch" />
+        <ImgVector3 style={styles.tabUnderline} />
       </View>
 
       {/* 우측 탭: 책갈피 */}

@@ -25,10 +25,10 @@ import {
 } from 'react-native';
 
 // 피그마 원본 에셋 (7일 후 만료 — 로컬 asset으로 교체 권장)
-const imgLikeComment = require('../../../assets/images/tini-ui/d1c9ca4d-0a2c-45b9-98b0-051a5a8fe46d.png');
-const imgDots = require('../../../assets/images/tini-ui/e2de98a5-243e-4319-a562-896b345ddb7e.png');
-const imgAvatar = require('../../../assets/images/tini-ui/21cc2712-841a-4270-9c06-68babab7f410.png');
-const imgMenu = require('../../../assets/images/tini-ui/0ac893a6-97fe-4436-8ef6-e7b3016c6714.png');
+import ImgLikeComment from '../../../assets/images/tini-ui/d1c9ca4d-0a2c-45b9-98b0-051a5a8fe46d.svg';
+import ImgDots from '../../../assets/images/tini-ui/e2de98a5-243e-4319-a562-896b345ddb7e.svg';
+import ImgAvatar from '../../../assets/images/tini-ui/21cc2712-841a-4270-9c06-68babab7f410.svg';
+import ImgMenu from '../../../assets/images/tini-ui/0ac893a6-97fe-4436-8ef6-e7b3016c6714.svg';
 
 type PostCardProps = {
   authorInitial?: string;   // 아바타 옆 글자 (예: "J")
@@ -46,11 +46,13 @@ export default function PostCard({
       {/* 헤더: 아바타 + 이니셜 / 메뉴 */}
       <View style={styles.header}>
         <View style={styles.authorGroup}>
-          <Image source={imgAvatar} style={styles.avatar} />
+          <View style={styles.avatar}>
+            <ImgAvatar width={30} height={30} />
+          </View>
           <Text style={styles.authorInitial}>{authorInitial}</Text>
         </View>
         <TouchableOpacity onPress={onPressMenu} hitSlop={8}>
-          <Image source={imgMenu} style={styles.menuIcon} />
+          <ImgMenu style={styles.menuIcon} />
         </TouchableOpacity>
       </View>
 
@@ -64,8 +66,8 @@ export default function PostCard({
 
       {/* 좋아요 / 댓글 아이콘 행 */}
       <View style={styles.actionRow}>
-        <Image source={imgLikeComment} style={styles.likeComment} resizeMode="contain" />
-        <Image source={imgDots} style={styles.dots} resizeMode="contain" />
+        <ImgLikeComment style={styles.likeComment} />
+        <ImgDots style={styles.dots} />
       </View>
 
       {/* 캡션 */}

@@ -14,7 +14,7 @@ import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import { colors, fonts } from '../theme';
 
 // 피그마 에셋 — 7일 후 만료, 로컬 asset으로 교체
-const imgMinus = require('../../../assets/images/tini-ui/963de233-f371-4654-8380-f363860e702c.png');
+import ImgMinus from '../../../assets/images/tini-ui/963de233-f371-4654-8380-f363860e702c.svg';
 
 type Props = {
   onDelete?: () => void;
@@ -26,7 +26,7 @@ export default function DiaryContextMenu({ onDelete, onSetPrimary, onMoveToShelf
   return (
     <View style={styles.menu}>
       {/* 다이어리 삭제 */}
-      <Image source={imgMinus} style={styles.minusIcon} resizeMode="contain" />
+      <ImgMinus style={styles.minusIcon} />
       <TouchableOpacity style={styles.deleteHit} onPress={onDelete}>
         <Text style={styles.deleteText}>다이어리 삭제</Text>
       </TouchableOpacity>

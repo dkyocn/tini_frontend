@@ -14,7 +14,7 @@ import { View, Text, Image, StyleSheet } from 'react-native';
 import { colors, fonts } from '../theme';
 
 // 피그마 에셋 — 7일 후 만료, 로컬 asset으로 교체
-const imgGroup = require('../../../assets/images/tini-ui/650099ee-b875-4fb7-93bc-1f6a63813a10.png');
+import ImgGroup from '../../../assets/images/tini-ui/650099ee-b875-4fb7-93bc-1f6a63813a10.svg';
 
 export default function WritingDiaryCardWide() {
   const bars = [18, 83, 148, 213, 278, 343];
@@ -25,7 +25,7 @@ export default function WritingDiaryCardWide() {
       ))}
 
       <Text style={styles.title}>작성중인 다이어리</Text>
-      <Image source={imgGroup} style={styles.groupIcon} resizeMode="contain" />
+      <ImgGroup style={styles.groupIcon} />
     </View>
   );
 }

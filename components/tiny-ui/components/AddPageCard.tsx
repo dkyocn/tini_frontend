@@ -12,8 +12,8 @@ import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import { colors, fonts } from '../theme';
 
 // 피그마 에셋 — 7일 후 만료, 로컬 asset으로 교체
-const imgVector3 = require('../../../assets/images/tini-ui/0bd27ea4-b072-4282-9a93-89a72b57da73.png'); // 탭 구분선
-const imgFrame1948755666 = require('../../../assets/images/tini-ui/25aa86e1-3448-4848-b631-8366a3e3f300.png'); // 속지 썸네일
+import ImgVector3 from '../../../assets/images/tini-ui/0bd27ea4-b072-4282-9a93-89a72b57da73.svg'; // 탭 구분선
+import ImgFrame1948755666 from '../../../assets/images/tini-ui/25aa86e1-3448-4848-b631-8366a3e3f300.svg'; // 속지 썸네일
 
 const ROWS_TOP = [121, 275];
 
@@ -30,7 +30,7 @@ export default function AddPageCard({ onPressAddPage }: AddPageCardProps) {
       {/* 좌측 탭: 저장된 페이지 (+ 밑줄) */}
       <View style={styles.tabLeft}>
         <Text style={styles.tabText}>저장된 페이지</Text>
-        <Image source={imgVector3} style={styles.tabUnderline} resizeMode="stretch" />
+        <ImgVector3 style={styles.tabUnderline} />
       </View>
 
       {/* 우측 탭: 속지 양식 */}
@@ -42,7 +42,9 @@ export default function AddPageCard({ onPressAddPage }: AddPageCardProps) {
       {ROWS_TOP.map((top, ri) => (
         <View key={ri} style={[styles.row, { top }]}>
           {[0, 1, 2].map((ci) => (
-            <Image key={ci} source={imgFrame1948755666} style={styles.thumb} />
+            <View key={ci} style={styles.thumb}>
+              <ImgFrame1948755666 width="100%" height="100%" />
+            </View>
           ))}
         </View>
       ))}

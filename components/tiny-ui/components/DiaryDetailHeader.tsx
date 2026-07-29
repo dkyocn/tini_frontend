@@ -15,9 +15,9 @@ import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import { colors, fonts } from '../theme';
 
 // 피그마 에셋 — 7일 후 만료, 로컬 asset으로 교체
-const imgIcon1 = require('../../../assets/images/tini-ui/f67ee50f-7702-4410-a998-af0769a35ced.png');
-const imgIcon2Bg = require('../../../assets/images/tini-ui/81c7fe52-7372-4b53-9f78-2d7b576b7d22.png');
-const imgIcon2Edit = require('../../../assets/images/tini-ui/c339c43e-2075-437f-9f72-722e901cf490.png');
+import ImgIcon1 from '../../../assets/images/tini-ui/f67ee50f-7702-4410-a998-af0769a35ced.svg';
+import ImgIcon2Bg from '../../../assets/images/tini-ui/81c7fe52-7372-4b53-9f78-2d7b576b7d22.svg';
+import ImgIcon2Edit from '../../../assets/images/tini-ui/c339c43e-2075-437f-9f72-722e901cf490.svg';
 
 type Props = {
   title?: string;
@@ -39,12 +39,12 @@ export default function DiaryDetailHeader({
 
         <View style={styles.iconGroup}>
           <TouchableOpacity onPress={onPressIcon1} hitSlop={8}>
-            <Image source={imgIcon1} style={styles.icon} resizeMode="contain" />
+            <ImgIcon1 style={styles.icon} />
           </TouchableOpacity>
 
           <TouchableOpacity onPress={onPressIcon2} hitSlop={8} style={styles.icon2}>
-            <Image source={imgIcon2Bg} style={styles.icon2Bg} resizeMode="contain" />
-            <Image source={imgIcon2Edit} style={styles.icon2Edit} resizeMode="contain" />
+            <ImgIcon2Bg style={styles.icon2Bg} />
+            <ImgIcon2Edit style={styles.icon2Edit} />
           </TouchableOpacity>
         </View>
       </View>

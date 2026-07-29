@@ -15,7 +15,7 @@ import { View, Text, Image, StyleSheet } from 'react-native';
 import { colors, fonts } from '../theme';
 
 // 피그마 에셋 — 7일 후 만료, 로컬 asset으로 교체
-const imgUnderline = require('../../../assets/images/tini-ui/230ebb38-c06f-4d45-8298-b759e9c7c7f9.png');
+import ImgUnderline from '../../../assets/images/tini-ui/230ebb38-c06f-4d45-8298-b759e9c7c7f9.svg';
 
 // 탭 라벨과 절대 좌표(left). 첫 탭만 활성(검정), 나머지 비활성(#7F7F7F)
 const TABS: { label: string; left: number; active: boolean }[] = [
@@ -52,7 +52,7 @@ export default function DecorateShopScreen() {
       ))}
 
       {/* 활성 탭 밑줄 */}
-      <Image source={imgUnderline} style={styles.underline} resizeMode="stretch" />
+      <ImgUnderline style={styles.underline} />
 
       {/* 원형 아이템 슬롯 그리드 */}
       {ROW_TOP.map((top) =>

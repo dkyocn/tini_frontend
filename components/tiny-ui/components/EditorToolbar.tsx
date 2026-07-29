@@ -13,11 +13,11 @@ import { View, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import { colors } from '../theme';
 
 // 피그마 에셋 — 7일 후 만료, 로컬 asset으로 교체
-const imgEdit = require('../../../assets/images/tini-ui/1e23991a-00d7-4dcf-b225-0dc7e1ca68d1.png');
-const imgBagAlt = require('../../../assets/images/tini-ui/0085075d-2274-4cdc-8960-b790a296b587.png');
-const imgFrame = require('../../../assets/images/tini-ui/6553c592-47dd-419a-a6dc-a8147f7e9af3.png');
-const imgImage2 = require('../../../assets/images/tini-ui/0c1c33cd-0617-4081-ac47-039d1f2452ad.png');
-const imgArhive = require('../../../assets/images/tini-ui/4ee8bd4f-6e44-472e-961a-eaff224f4a61.png');
+import ImgEdit from '../../../assets/images/tini-ui/1e23991a-00d7-4dcf-b225-0dc7e1ca68d1.svg';
+import ImgBagAlt from '../../../assets/images/tini-ui/0085075d-2274-4cdc-8960-b790a296b587.svg';
+import ImgFrame from '../../../assets/images/tini-ui/6553c592-47dd-419a-a6dc-a8147f7e9af3.svg';
+import ImgImage2 from '../../../assets/images/tini-ui/0c1c33cd-0617-4081-ac47-039d1f2452ad.svg';
+import ImgArhive from '../../../assets/images/tini-ui/4ee8bd4f-6e44-472e-961a-eaff224f4a61.svg';
 const imgImage46 = require('../../../assets/images/tini-ui/03b14668-2c36-4fd3-9d31-ff84ecc2ff01.png');
 
 type Props = {
@@ -25,21 +25,21 @@ type Props = {
 };
 
 export default function EditorToolbar({ onPress }: Props) {
-  const icons = [
-    { src: imgEdit, w: 24, h: 24 },
-    { src: imgBagAlt, w: 24, h: 24 },
-    { src: imgFrame, w: 24, h: 20 },
-    { src: imgImage2, w: 24, h: 24 },
-    { src: imgArhive, w: 24, h: 24 },
-    { src: imgImage46, w: 14, h: 18 },
+  const icons: React.ReactNode[] = [
+    <ImgEdit width={24} height={24} />,
+    <ImgBagAlt width={24} height={24} />,
+    <ImgFrame width={24} height={20} />,
+    <ImgImage2 width={24} height={24} />,
+    <ImgArhive width={24} height={24} />,
+    <Image source={imgImage46} style={{ width: 14, height: 18 }} resizeMode="contain" />,
   ];
 
   return (
     <View style={styles.bar}>
       <View style={styles.row}>
-        {icons.map((ic, i) => (
+        {icons.map((el, i) => (
           <TouchableOpacity key={i} onPress={() => onPress?.(i)} hitSlop={8}>
-            <Image source={ic.src} style={{ width: ic.w, height: ic.h }} resizeMode="contain" />
+            {el}
           </TouchableOpacity>
         ))}
       </View>
