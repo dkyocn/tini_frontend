@@ -332,6 +332,11 @@ render.experimental.xml
 google-services.json
 GoogleService-Info.plist
 
+# App icon source / intermediate files (not referenced by app code)
+assets/icon1.jpeg
+assets/icon2.png
+assets/app-icon-master-1024.png
+
 ### ReactNative.Xcode Stack ###
 ## User settings
 xcuserdata/
