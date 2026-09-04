@@ -48,7 +48,15 @@ const modalItems: { title: string; render: () => React.ReactNode }[] = [
   { title: 'DiaryContextMenu', render: () => <DiaryContextMenu /> },
   { title: 'DiaryPageSelectCard', render: () => <DiaryPageSelectCard /> },
   { title: 'EditorToolbar', render: () => <EditorToolbar /> },
-  { title: 'MyPageMenuCard', render: () => <MyPageMenuCard /> },
+  {
+    title: 'MyPageMenuCard',
+    render: () => (
+      <MyPageMenuCard
+        title="프로필"
+        items={[{ label: '기본 정보' }, { label: '성별' }, { label: '아이디' }]}
+      />
+    ),
+  },
   { title: 'StickerProductCard', render: () => <StickerProductCard /> },
   { title: 'StreakCalendarCard', render: () => <StreakCalendarCard /> },
 ];

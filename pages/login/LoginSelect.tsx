@@ -14,6 +14,8 @@ type TokenDTO = {
   accessToken: string;
   refreshToken: string;
   user?: {
+    userNick?: string | null;
+    userId?: string | null;
     userGender?: Gender | null;
     userBirthDate?: string | null;
   };
@@ -70,6 +72,12 @@ export default function LoginSelect({ onLoginSuccess }: Props) {
       await AsyncStorage.setItem('accessToken', accessToken);
       if (refreshToken) {
         await AsyncStorage.setItem('refreshToken', refreshToken);
+      }
+      if (user?.userNick) {
+        await AsyncStorage.setItem('userNick', user.userNick);
+      }
+      if (user?.userId) {
+        await AsyncStorage.setItem('userId', user.userId);
       }
 
       // TEMP: Firebase 비활성화 (카카오 로그인 테스트용)
@@ -133,10 +141,16 @@ export default function LoginSelect({ onLoginSuccess }: Props) {
         { accessToken: idToken },
       );
 
-      const { accessToken, refreshToken } = backendResponse.data;
+      const { accessToken, refreshToken, user } = backendResponse.data;
       await AsyncStorage.setItem('accessToken', accessToken);
       if (refreshToken) {
         await AsyncStorage.setItem('refreshToken', refreshToken);
+      }
+      if (user?.userNick) {
+        await AsyncStorage.setItem('userNick', user.userNick);
+      }
+      if (user?.userId) {
+        await AsyncStorage.setItem('userId', user.userId);
       }
       // TEMP: Firebase 비활성화 (카카오 로그인 테스트용)
       // await saveFcmToken(accessToken);

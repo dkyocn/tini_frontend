@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import AuthStack from './navigation/AuthStack';
@@ -39,13 +40,15 @@ export default function App() {
   if (isLoading) {
     return (
       // 스플래시 화면 또는 로딩 컴포넌트
-      <></>
+      <SafeAreaProvider />
     );
   }
 
   return (
-    <NavigationContainer>
-      {isLoggedIn ? <MainTabNavigator onLogout={() => setIsLoggedIn(false)} /> : <AuthStack onLoginSuccess={() => setIsLoggedIn(true)} />}
-    </NavigationContainer>
+    <SafeAreaProvider>
+      <NavigationContainer>
+        {isLoggedIn ? <MainTabNavigator onLogout={() => setIsLoggedIn(false)} /> : <AuthStack onLoginSuccess={() => setIsLoggedIn(true)} />}
+      </NavigationContainer>
+    </SafeAreaProvider>
   );
 }

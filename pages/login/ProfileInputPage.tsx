@@ -127,6 +127,7 @@ export default function ProfileInputPage({ initialProfile, onNext }: Props) {
           },
         },
       );
+      await AsyncStorage.setItem('userNick', nickname);
       onNext({ nickname, birthdate: birthdateText, gender });
     } catch (error) {
       console.error('프로필 저장 실패:', error);
