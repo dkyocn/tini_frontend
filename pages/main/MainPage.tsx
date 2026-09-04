@@ -38,6 +38,7 @@ import {
   Pressable,
   ScrollView,
   Alert,
+  Image,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { SvgProps } from 'react-native-svg';
@@ -46,7 +47,6 @@ import CloverCount from '../../components/common/clover_count';
 import StreakCalendarCard from '../../components/tiny-ui/components/StreakCalendarCard';
 import AchievementList from '../../components/tiny-ui/components/AchievementList';
 import BookshelfScreen from '../../components/tiny-ui/components/BookshelfScreen';
-import Illustration from '../../assets/images/main/illust-bookshelf.svg';
 import IconHome from '../../assets/images/main/nav-home.svg';
 import IconSearch from '../../assets/images/main/nav-search.svg';
 import IconBook from '../../assets/images/main/nav-book.svg';
@@ -147,7 +147,13 @@ export default function MainPage({ cloverCount = 10, onTabPress, onOpenTracking 
       {/* 중앙 일러스트 + 터치 영역 */}
       <View style={styles.illustWrap}>
         <View style={{ width: illustWidth, height: illustHeight }}>
-          <Illustration width={illustWidth} height={illustHeight} />
+          {/* 원본 SVG(3.2MB, 벡터 경로 다수)가 화면 전환 시 렌더링 지연(수 초)을 일으켜
+              미리 래스터화한 PNG(@3x)로 교체. 터치 영역은 위 투명 오버레이라 영향 없음. */}
+          <Image
+            source={require('../../assets/images/main/illust-bookshelf.png')}
+            style={{ width: illustWidth, height: illustHeight }}
+            resizeMode="contain"
+          />
           {HOTSPOTS.map((h) => (
             <TouchableOpacity
               key={h.key}
