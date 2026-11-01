@@ -27,9 +27,14 @@ export default function AuthStack({onLoginSuccess}: Props) {
       <Stack.Screen name="LoginSelect">
         {({navigation}) => (
           <LoginSelect
-            onLoginSuccess={initialProfile =>
-              navigation.navigate('ProfileInput', initialProfile)
-            }
+            onLoginSuccess={initialProfile => {
+              // 이미 가입된 계정으로 로그인한 거면 온보딩(프로필 입력) 없이 바로 메인으로
+              if (initialProfile?.isNewUser === false) {
+                onLoginSuccess();
+                return;
+              }
+              navigation.navigate('ProfileInput', initialProfile);
+            }}
           />
         )}
       </Stack.Screen>

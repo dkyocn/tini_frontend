@@ -7,6 +7,8 @@ export { default as AddPageCard } from './AddPageCard';
 export { default as BookmarkCard } from './BookmarkCard';
 export { default as BookshelfScreen } from './BookshelfScreen';
 export { default as ColorThemeCard } from './ColorThemeCard';
+export { default as ConfirmModal } from './ConfirmModal';
+export { ConfirmProvider, useConfirm } from './ConfirmProvider';
 export { default as ConsentAgreementCard } from './ConsentAgreementCard';
 export { default as CreatePostHeader } from './CreatePostHeader';
 export { default as DecorateShopScreen } from './DecorateShopScreen';
