@@ -5,8 +5,9 @@
  * 구성:
  *  - 헤더: 오늘 날짜(좌) + 클로버 보유 뱃지(우)
  *  - 타이틀 바: 메뉴 아이콘 + "마이페이지"(24) + 검색 아이콘
- *  - 프로필 카드: 프로필 사진(없으면 기본 티니 로고) + 닉네임 + 아이디
- *  - 메뉴 카드 5개: 프로필 / 계정관리 / 설정 / 도움말 / 구독
+ *  - 프로필 카드: 프로필 사진(없으면 기본 티니 로고) + 닉네임(40) + 아이디/이메일(16)
+ *    (탭하면 프로필 화면으로 이동)
+ *  - 메뉴 카드 5개: 계정관리 / 설정 / 도움말 / 앱 정보 / 구독  (Figma "마이페이지_수정" 35:428)
  *    (섹션 헤더는 클릭 불가, 하위 항목만 클릭 시 다른 페이지로 이동)
  *  - 하단 탭바 (메인 화면과 동일)
  */
@@ -55,17 +56,24 @@ function formatKoreanDate(d: Date): string {
 type Section = {
   title: string;
   items: string[];
+  /** Figma 카드 높이 (섹션마다 고정) */
+  height: number;
 };
 
 const SECTIONS: Section[] = [
-  { title: '프로필', items: ['기본 정보', '성별', '아이디'] },
   {
     title: '계정관리',
     items: ['로그인 계정', '기기정보 삭제', '로그아웃', '알림 설정', '마케팅 정보 활용 동의'],
+    height: 320,
   },
-  { title: '설정', items: ['테마', '템플릿 설정(시간 설정)', '시스템 설정', '언어', '앱 아이콘'] },
-  { title: '도움말', items: ['FAQ', '공지사항', '문의', '라이센스'] },
-  { title: '구독', items: ['이용 플랜', '쿠폰 등록', '무료 체험 광고'] },
+  {
+    title: '설정',
+    items: ['테마', '템플릿 설정(시간 설정)', '시스템 설정', '언어', '앱 아이콘'],
+    height: 320,
+  },
+  { title: '도움말', items: ['FAQ', '공지사항', '문의'], height: 250 },
+  { title: '앱 정보', items: ['상세 약관', '라이센스', '개인정보 처리 방침'], height: 250 },
+  { title: '구독', items: ['이용 플랜', '쿠폰 등록', '무료 체험 광고'], height: 250 },
 ];
 
 type Props = {
@@ -74,6 +82,7 @@ type Props = {
   userId?: string;
   profileImageUri?: string | null;
   onTabPress?: (key: TabKey) => void;
+  onProfilePress?: () => void;
   onMenuItemPress?: (section: string, item: string) => void;
 };
 
@@ -83,6 +92,7 @@ export default function MyPage({
   userId,
   profileImageUri = null,
   onTabPress,
+  onProfilePress,
   onMenuItemPress,
 }: Props) {
   const [storedNickname, setStoredNickname] = useState('티니');
@@ -135,19 +145,24 @@ export default function MyPage({
         showsVerticalScrollIndicator={false}
       >
         {/* 프로필 카드 */}
-        <View style={styles.profileCard}>
+        <TouchableOpacity
+          style={styles.profileCard}
+          activeOpacity={onProfilePress ? 0.7 : 1}
+          disabled={!onProfilePress}
+          onPress={onProfilePress}
+        >
           <View style={styles.avatar}>
             {profileImageUri ? (
               <Image source={{ uri: profileImageUri }} style={styles.avatarImage} />
             ) : (
-              <TiniLogo width={44} height={44} />
+              <TiniLogo width={55} height={55} />
             )}
           </View>
           <View style={styles.profileTextBlock}>
             <Text style={styles.nickname}>{displayNickname}</Text>
             <Text style={styles.userId}>{displayUserId}</Text>
           </View>
-        </View>
+        </TouchableOpacity>
 
         {/* 메뉴 카드들 */}
         {SECTIONS.map((section) => (
@@ -155,8 +170,11 @@ export default function MyPage({
             key={section.title}
             title={section.title}
             items={buildItems(section)}
+            minHeight={section.height}
           />
         ))}
+
+        <Text style={styles.version}>ver 2.0</Text>
       </ScrollView>
 
       {/* 하단 탭바 */}
@@ -207,48 +225,58 @@ const styles = StyleSheet.create({
   titleText: {
     fontFamily: 'Inter',
     fontSize: 24,
-    fontWeight: '600',
     color: '#000000',
   },
   scrollContent: {
     paddingHorizontal: 20,
+    paddingTop: 4,
     paddingBottom: 24,
-    gap: 36,
+    gap: 40,
   },
   profileCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 16,
+    gap: 14,
     backgroundColor: '#FFFFFF',
     borderRadius: 20,
-    padding: 20,
+    height: 120,
+    paddingHorizontal: 23,
   },
   avatar: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
-    backgroundColor: '#EFEFEF',
+    width: 75,
+    height: 75,
+    borderRadius: 38,
+    backgroundColor: '#D9D9D9',
     alignItems: 'center',
     justifyContent: 'center',
     overflow: 'hidden',
   },
   avatarImage: {
-    width: 64,
-    height: 64,
+    width: 75,
+    height: 75,
   },
+  // 이름은 위, 이메일은 아래에 붙도록 아바타 높이(75)에 맞춰 양끝 정렬
   profileTextBlock: {
-    gap: 4,
+    height: 75,
+    justifyContent: 'space-between',
   },
   nickname: {
     fontFamily: 'Inter',
-    fontSize: 24,
+    fontSize: 40,
+    lineHeight: 48,
     fontWeight: '700',
     color: '#000000',
   },
   userId: {
     fontFamily: 'Inter',
-    fontSize: 14,
-    color: '#757575',
+    fontSize: 16,
+    color: '#000000',
+  },
+  version: {
+    alignSelf: 'center',
+    fontFamily: 'Inter',
+    fontSize: 16,
+    color: '#000000',
   },
   tabBar: {
     height: 67,

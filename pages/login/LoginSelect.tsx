@@ -13,6 +13,7 @@ type Gender = 'FEMALE' | 'MALE' | 'NONBINARY';
 type TokenDTO = {
   accessToken: string;
   refreshToken: string;
+  isNewUser?: boolean;
   user?: {
     userNick?: string | null;
     userId?: string | null;
@@ -24,6 +25,8 @@ type TokenDTO = {
 export type InitialProfile = {
   birthdate?: string;
   gender?: Gender;
+  /** false면 이미 가입된 계정으로 로그인한 것 — 온보딩(프로필 입력) 건너뛰기 */
+  isNewUser?: boolean;
 };
 
 type Props = {
@@ -47,28 +50,19 @@ export default function LoginSelect({ onLoginSuccess }: Props) {
   }, []);
 
   const handleKakaoLogin = async () => {
-    console.log('[KAKAO] 1 handleKakaoLogin called, loadingProvider=', loadingProvider);
-    if (loadingProvider) {
-      console.log('[KAKAO] 1a early-return (already loading)');
-      return;
-    }
+    if (loadingProvider) return;
     setLoadingProvider('kakao');
-    console.log('[KAKAO] 2 loadingProvider set to kakao, about to await kakaoLogin()');
 
     try {
       const kakaoToken = await kakaoLogin();
-      console.log('[KAKAO] 3 kakaoLogin resolved, token=', JSON.stringify(kakaoToken));
 
-      console.log('[KAKAO] 4 calling backend...');
       const response = await axios.post<TokenDTO>(
         `${API_BASE_URL}/user/kakao/login`,
         { accessToken: kakaoToken.accessToken },
         { timeout: 8000 },
       );
-      console.log('[KAKAO] 5 backend responded status=', response.status);
 
-
-      const { accessToken, refreshToken, user } = response.data;
+      const { accessToken, refreshToken, user, isNewUser } = response.data;
       await AsyncStorage.setItem('accessToken', accessToken);
       if (refreshToken) {
         await AsyncStorage.setItem('refreshToken', refreshToken);
@@ -79,6 +73,8 @@ export default function LoginSelect({ onLoginSuccess }: Props) {
       if (user?.userId) {
         await AsyncStorage.setItem('userId', user.userId);
       }
+      // 마이페이지 > 로그인 계정에서 연동 상태 표시용
+      await AsyncStorage.setItem('loginProvider', 'kakao');
 
       // TEMP: Firebase 비활성화 (카카오 로그인 테스트용)
       // await saveFcmToken(accessToken);
@@ -90,17 +86,15 @@ export default function LoginSelect({ onLoginSuccess }: Props) {
       onLoginSuccess({
         birthdate,
         gender: user?.userGender ?? undefined,
+        isNewUser,
       });
     } catch (error) {
-      console.log('[KAKAO] X caught error:', error);
       console.error('카카오 로그인 실패:', error);
       Alert.alert(
         '로그인 실패',
         '카카오 로그인에 실패했습니다. 다시 시도해주세요.',
       );
-
     } finally {
-      console.log('[KAKAO] Y finally: setLoadingProvider(null)');
       setLoadingProvider(null);
     }
   };
@@ -141,7 +135,7 @@ export default function LoginSelect({ onLoginSuccess }: Props) {
         { accessToken: idToken },
       );
 
-      const { accessToken, refreshToken, user } = backendResponse.data;
+      const { accessToken, refreshToken, user, isNewUser } = backendResponse.data;
       await AsyncStorage.setItem('accessToken', accessToken);
       if (refreshToken) {
         await AsyncStorage.setItem('refreshToken', refreshToken);
@@ -152,11 +146,14 @@ export default function LoginSelect({ onLoginSuccess }: Props) {
       if (user?.userId) {
         await AsyncStorage.setItem('userId', user.userId);
       }
+      // 마이페이지 > 로그인 계정에서 연동 상태 표시용
+      await AsyncStorage.setItem('loginProvider', 'google');
       // TEMP: Firebase 비활성화 (카카오 로그인 테스트용)
       // await saveFcmToken(accessToken);
 
       onLoginSuccess({
         birthdate: birthdate ?? undefined,
+        isNewUser,
       });
     } catch (error) {
       console.error('구글 로그인 실패:', error);

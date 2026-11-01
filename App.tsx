@@ -6,6 +6,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import AuthStack from './navigation/AuthStack';
 import MainTabNavigator from './navigation/MainTabNavigator';
 import ComponentPreview from './pages/ComponentPreview';
+import { ConfirmProvider } from './components/tiny-ui/components/ConfirmProvider';
 
 const PREVIEW_COMPONENTS = false;
 // TEMP: Firebase 비활성화 (카카오 로그인 테스트용)
@@ -46,9 +47,11 @@ export default function App() {
 
   return (
     <SafeAreaProvider>
-      <NavigationContainer>
-        {isLoggedIn ? <MainTabNavigator onLogout={() => setIsLoggedIn(false)} /> : <AuthStack onLoginSuccess={() => setIsLoggedIn(true)} />}
-      </NavigationContainer>
+      <ConfirmProvider>
+        <NavigationContainer>
+          {isLoggedIn ? <MainTabNavigator onLogout={() => setIsLoggedIn(false)} /> : <AuthStack onLoginSuccess={() => setIsLoggedIn(true)} />}
+        </NavigationContainer>
+      </ConfirmProvider>
     </SafeAreaProvider>
   );
 }
