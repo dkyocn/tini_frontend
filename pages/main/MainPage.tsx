@@ -12,7 +12,7 @@
  *  - 연속 작성일 카드(좌상단) → StreakCalendarCard 팝업
  *  - 트로피(우상단)         → AchievementList 팝업 (업적)
  *  - 초록 책(중앙 좌측)      → BookshelfScreen 팝업 (책장)
- *  - 세잎클로버 티니(우하단) → 오늘의 트래킹 (아직 화면 없음 → onOpenTracking / placeholder)
+ *  - 세잎클로버 티니(우하단) → TodayTracking 팝업 (오늘의 트래킹)
  *
  * 터치 영역 좌표는 Figma 노드 1:435(Layer_2, 319 x 544) 기준. 화면 폭에 맞춰 scale.
  *
@@ -47,6 +47,7 @@ import CloverCount from '../../components/common/clover_count';
 import StreakCalendarCard from '../../components/tiny-ui/components/StreakCalendarCard';
 import AchievementList from '../../components/tiny-ui/components/AchievementList';
 import BookshelfScreen from '../../components/tiny-ui/components/BookshelfScreen';
+import TodayTracking from '../tracking/TodayTracking';
 import IconHome from '../../assets/images/main/nav-home.svg';
 import IconSearch from '../../assets/images/main/nav-search.svg';
 import IconBook from '../../assets/images/main/nav-book.svg';
@@ -69,7 +70,7 @@ const TABS: { key: TabKey; Icon: React.FC<SvgProps>; w: number; h: number }[] = 
 ];
 
 // 일러스트(319 x 544) 안에서 눌러야 하는 영역. 노드 bbox + 여유 패딩.
-type PopupKey = 'streak' | 'achievement' | 'bookshelf';
+type PopupKey = 'streak' | 'achievement' | 'bookshelf' | 'tracking';
 type Hotspot = {
   key: string;
   x: number;
@@ -83,17 +84,18 @@ const HOTSPOTS: Hotspot[] = [
   { key: 'streak', popup: 'streak', x: 18, y: 0, w: 132, h: 158 }, // 연속 작성일 카드 (좌상단)
   { key: 'achievement', popup: 'achievement', x: 186, y: 38, w: 112, h: 98 }, // 트로피 (우상단)
   { key: 'bookshelf', popup: 'bookshelf', x: 12, y: 224, w: 88, h: 172 }, // 초록 책 (중앙 좌측)
-  { key: 'tracking', soonTitle: '오늘의 트래킹', x: 203, y: 336, w: 102, h: 110 }, // 세잎클로버 티니 (우하단)
+  { key: 'tracking', popup: 'tracking', x: 203, y: 336, w: 102, h: 110 }, // 세잎클로버 티니 (우하단)
   { key: 'rabbit', soonTitle: '토끼 인형', x: 96, y: 214, w: 98, h: 96 }, // 토끼 인형 (중앙)
   { key: 'radio', soonTitle: '라디오', x: 222, y: 150, w: 82, h: 124 }, // 라디오 (우측, 안테나 포함)
   { key: 'book', soonTitle: '펼친 책', x: 60, y: 452, w: 210, h: 92 }, // 하단 펼친 책
 ];
 
-// 팝업 키 → 렌더할 컴포넌트
-const POPUPS: Record<PopupKey, React.ComponentType> = {
+// 팝업 키 → 렌더할 컴포넌트 (onClose는 tracking처럼 자체 닫기 버튼이 있는 팝업만 사용)
+const POPUPS: Record<PopupKey, React.ComponentType<{ onClose?: () => void }>> = {
   streak: StreakCalendarCard,
   achievement: AchievementList,
   bookshelf: BookshelfScreen,
+  tracking: TodayTracking,
 };
 
 function formatKoreanDate(d: Date): string {
@@ -105,11 +107,9 @@ type Props = {
   cloverCount?: number;
   /** 탭 아이콘을 눌렀을 때 (네비게이션 연결 지점) */
   onTabPress?: (key: TabKey) => void;
-  /** 세잎클로버 티니 → 오늘의 트래킹 (없으면 준비중 안내) */
-  onOpenTracking?: () => void;
 };
 
-export default function MainPage({ cloverCount = 10, onTabPress, onOpenTracking }: Props) {
+export default function MainPage({ cloverCount = 10, onTabPress }: Props) {
   const { width } = useWindowDimensions();
   const [activePopup, setActivePopup] = useState<PopupKey | null>(null);
 
@@ -125,10 +125,6 @@ export default function MainPage({ cloverCount = 10, onTabPress, onOpenTracking 
   const handleHotspot = (h: Hotspot) => {
     if (h.popup) {
       setActivePopup(h.popup);
-      return;
-    }
-    if (h.key === 'tracking' && onOpenTracking) {
-      onOpenTracking();
       return;
     }
     Alert.alert(h.soonTitle ?? '준비 중', '아직 준비 중인 화면이에요.');
@@ -194,15 +190,20 @@ export default function MainPage({ cloverCount = 10, onTabPress, onOpenTracking 
         animationType="fade"
         onRequestClose={() => setActivePopup(null)}
       >
+        {/* 오늘의 트래킹은 팝업 내부에서 자체 스크롤하므로, 바깥 ScrollView는 잠가서 팝업 위치를 가운데에 고정 */}
         <ScrollView
           style={styles.overlay}
           contentContainerStyle={styles.overlayScroll}
           showsVerticalScrollIndicator={false}
+          scrollEnabled={activePopup !== 'tracking'}
+          bounces={activePopup !== 'tracking'}
         >
           {/* 바깥(빈 공간) 터치 시 닫힘 */}
           <Pressable style={styles.overlayContent} onPress={() => setActivePopup(null)}>
             {/* 팝업 내부 터치는 닫히지 않도록 전파 차단 */}
-            <Pressable onPress={() => {}}>{PopupComp ? <PopupComp /> : null}</Pressable>
+            <Pressable onPress={() => {}}>
+              {PopupComp ? <PopupComp onClose={() => setActivePopup(null)} /> : null}
+            </Pressable>
           </Pressable>
         </ScrollView>
       </Modal>

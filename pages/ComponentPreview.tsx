@@ -14,6 +14,7 @@ import EditorToolbar from '../components/tiny-ui/components/EditorToolbar';
 import MyPageMenuCard from '../components/tiny-ui/components/MyPageMenuCard';
 import StickerProductCard from '../components/tiny-ui/components/StickerProductCard';
 import StreakCalendarCard from '../components/tiny-ui/components/StreakCalendarCard';
+import TodayTracking from './tracking/TodayTracking';
 
 // tini-ui — 그대로 표시
 import CreatePostHeader from '../components/tiny-ui/components/CreatePostHeader';
@@ -59,6 +60,7 @@ const modalItems: { title: string; render: () => React.ReactNode }[] = [
   },
   { title: 'StickerProductCard', render: () => <StickerProductCard /> },
   { title: 'StreakCalendarCard', render: () => <StreakCalendarCard /> },
+  { title: 'TodayTracking', render: () => <TodayTracking /> },
 ];
 
 const inlineItems: { title: string; render: () => React.ReactNode }[] = [
