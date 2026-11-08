@@ -57,7 +57,6 @@ export default function TermsDetailPage({ title = '상세 약관', onBack, onTab
   return (
     <SubPageLayout
       title={title}
-      showVersion={false}
       onBack={onBack}
       onTabPress={onTabPress}
       footer={

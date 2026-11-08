@@ -6,7 +6,6 @@
  *  - 색상 테마      : 파스텔 컬러 4개 + 오른쪽 색 견본(20px 5칸)  ┐ 둘을 합쳐 하나만 선택.
  *  - 다크/라이트 테마: 다크 테마 / 라이트 테마                     ┘ (색상 테마를 고르면 다크/라이트는 해제, 반대도 동일)
  * 선택 표시는 Figma 6:1075 라디오(선택: 연두 원+흰 점 / 미선택: 회색 원).
- * 카드는 스크롤되고 "ver 2.0"은 표시하지 않음.
  */
 
 import React from 'react';
@@ -101,7 +100,7 @@ export default function ThemePage({ onBack, onTabPress }: Props) {
   };
 
   return (
-    <SubPageLayout title="테마" showVersion={false} onBack={onBack} onTabPress={onTabPress}>
+    <SubPageLayout title="테마" onBack={onBack} onTabPress={onTabPress}>
       <View style={styles.sections}>
         {SECTIONS.map((section) => (
           <View key={section.title} style={[styles.card, { minHeight: section.height }]}>

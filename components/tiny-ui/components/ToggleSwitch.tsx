@@ -3,6 +3,7 @@
  * Figma: 마이페이지_수정 > 계정관리_알림설정 (node 35:1137)
  *
  * 60 x 30, radius 30. 켜짐: 연두 배경 + 흰 원(24) 오른쪽 / 꺼짐: 연회색 배경 + 흰 원 왼쪽.
+ * disabled: 반투명 처리 + 눌러도 반응 없음.
  */
 
 import React from 'react';
@@ -12,16 +13,18 @@ import { colors } from '../theme';
 type Props = {
   value: boolean;
   onValueChange?: (next: boolean) => void;
+  disabled?: boolean;
 };
 
-export default function ToggleSwitch({ value, onValueChange }: Props) {
+export default function ToggleSwitch({ value, onValueChange, disabled = false }: Props) {
   return (
     <TouchableOpacity
-      style={[styles.track, value ? styles.trackOn : styles.trackOff]}
+      style={[styles.track, value ? styles.trackOn : styles.trackOff, disabled && styles.disabled]}
       activeOpacity={0.8}
+      disabled={disabled}
       onPress={() => onValueChange?.(!value)}
       accessibilityRole="switch"
-      accessibilityState={{ checked: value }}
+      accessibilityState={{ checked: value, disabled }}
     >
       <View style={styles.knob} />
     </TouchableOpacity>
@@ -43,6 +46,9 @@ const styles = StyleSheet.create({
   trackOff: {
     backgroundColor: colors.bg,
     justifyContent: 'flex-start',
+  },
+  disabled: {
+    opacity: 0.4,
   },
   knob: {
     width: 24,

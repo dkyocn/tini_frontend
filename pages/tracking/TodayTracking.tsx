@@ -8,7 +8,9 @@
  * 탭을 눌러 선택했을 때만 아래 내용이 바뀜 (아래 내용은 위아래로 스크롤):
  *   생체건강 · 생활습관 · 감정 · 에너지 상태 · 자기인식 · 사회활동 여가 · 디지털 집중 · 환경 · 북트래커 · 가계부
  *
- * 입력값은 전부 컴포넌트 내부 state(data)에 모아 두고, "완료"를 누르면 onComplete(data)로 넘김.
+ * 날짜를 누르면 달력 팝업(Figma 64:1893)이 떠서 기록할 날짜를 바꿀 수 있음 (오늘 이후는 선택 불가).
+ *
+ * 입력값은 전부 컴포넌트 내부 state(data)에 모아 두고, "완료"를 누르면 onComplete(data, date)로 넘김.
  * (서버 연동 전이라 저장은 부모 쪽에서 처리)
  */
 
@@ -25,6 +27,7 @@ import {
 } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 import { colors, fonts } from '../../components/tiny-ui/theme';
+import CalendarPopup from '../../components/tiny-ui/components/CalendarPopup';
 
 const CARD_WIDTH = 353;
 const CARD_HEIGHT = 520;
@@ -551,13 +554,15 @@ const PAGES: Record<(typeof TABS)[number]['key'], React.ComponentType<PageProps>
 
 type Props = {
   onClose?: () => void;
-  /** 완료 버튼 → 입력값 전달 (이후 onClose 호출) */
-  onComplete?: (data: Data) => void;
+  /** 완료 버튼 → 입력값과 기록 날짜 전달 (이후 onClose 호출) */
+  onComplete?: (data: Data, date: Date) => void;
 };
 
 export default function TodayTracking({ onClose, onComplete }: Props) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [data, setData] = useState<Data>({});
+  const [date, setDate] = useState(() => new Date());
+  const [calendarVisible, setCalendarVisible] = useState(false);
   const tabRef = useRef<ScrollView>(null);
 
   const set = (key: string, value: Value) => setData((prev) => ({ ...prev, [key]: value }));
@@ -572,7 +577,7 @@ export default function TodayTracking({ onClose, onComplete }: Props) {
   };
 
   const handleComplete = () => {
-    onComplete?.(data);
+    onComplete?.(data, date);
     onClose?.();
   };
 
@@ -590,7 +595,17 @@ export default function TodayTracking({ onClose, onComplete }: Props) {
           </Svg>
         </TouchableOpacity>
         <Text style={styles.title} pointerEvents="none">오늘의 트래킹</Text>
-        <Text style={styles.date} pointerEvents="none">{formatKoreanDate(new Date())}</Text>
+        <View style={styles.dateWrap} pointerEvents="box-none">
+          <TouchableOpacity
+            onPress={() => setCalendarVisible(true)}
+            activeOpacity={0.6}
+            hitSlop={{ top: 6, bottom: 6, left: 10, right: 10 }}
+            accessibilityRole="button"
+            accessibilityLabel="날짜 선택"
+          >
+            <Text style={styles.date}>{formatKoreanDate(date)}</Text>
+          </TouchableOpacity>
+        </View>
         <TouchableOpacity style={styles.completeButton} onPress={handleComplete} activeOpacity={0.8}>
           <Text style={styles.completeText}>완료</Text>
         </TouchableOpacity>
@@ -638,6 +653,21 @@ export default function TodayTracking({ onClose, onComplete }: Props) {
           </ScrollView>
         );
       })}
+
+      {/* 날짜 선택 달력 (Figma 64:2073 딤 + 64:2074 카드). 바깥을 누르면 닫힘 */}
+      {calendarVisible && (
+        <Pressable style={styles.calendarDim} onPress={() => setCalendarVisible(false)}>
+          <Pressable style={styles.calendarPos} onPress={() => {}}>
+            <CalendarPopup
+              value={date}
+              onSelect={(d) => {
+                setDate(d);
+                setCalendarVisible(false);
+              }}
+            />
+          </Pressable>
+        </Pressable>
+      )}
     </View>
   );
 }
@@ -649,6 +679,19 @@ const styles = StyleSheet.create({
     backgroundColor: colors.bg,
     borderRadius: 30,
     overflow: 'hidden',
+  },
+
+  /* 날짜 선택 달력 */
+  calendarDim: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0,0,0,0.25)',
+    zIndex: 10,
+  },
+  calendarPos: {
+    position: 'absolute',
+    top: 54,
+    left: 16,
+    right: 17,
   },
 
   /* 헤더 */
@@ -673,11 +716,14 @@ const styles = StyleSheet.create({
     lineHeight: 29,
     color: colors.black,
   },
-  date: {
+  dateWrap: {
     position: 'absolute',
     top: 54,
     left: 0,
     right: 0,
+    alignItems: 'center',
+  },
+  date: {
     textAlign: 'center',
     fontFamily: fonts.inter,
     fontSize: 14,
