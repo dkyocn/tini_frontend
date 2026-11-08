@@ -20,6 +20,7 @@ import TemplateSettingsPage, {
 } from '../pages/myPage/TemplateSettingsPage';
 import OptionSelectPage from '../pages/myPage/OptionSelectPage';
 import TermsDetailPage from '../pages/myPage/TermsDetailPage';
+import VersionInfoPage from '../pages/myPage/VersionInfoPage';
 
 // 마이페이지 하위 화면 (Figma "마이페이지_수정" 섹션). 스택으로 쌓고 뒤로가기로 하나씩 뺌.
 type Route =
@@ -32,10 +33,11 @@ type Route =
   | {name: 'template'}
   | {name: 'templateOption'; key: TemplateOptionKey}
   | {name: 'termsDetail'; title: string}
+  | {name: 'versionInfo'}
   | {name: 'list'; title: string; items: string[]};
 
 // 메뉴 항목 → 화면. 키: "섹션/항목"
-// 여기에 없는 항목(마케팅 정보 활용 동의, 시스템 설정, FAQ …)은 아직 Figma 화면이 없어 준비 중 안내만 띄움.
+// 여기에 없는 항목(시스템 설정, FAQ …)은 아직 Figma 화면이 없어 준비 중 안내만 띄움.
 const MENU_ROUTES: Record<string, Route> = {
   '계정관리/로그인 계정': {name: 'loginAccount'},
   '계정관리/기기정보 삭제': {name: 'deviceData'},
@@ -44,6 +46,7 @@ const MENU_ROUTES: Record<string, Route> = {
   '설정/테마': {name: 'theme'},
   '설정/템플릿 설정(시간 설정)': {name: 'template'},
   '앱 정보/상세 약관': {name: 'termsDetail', title: '상세 약관'},
+  '앱 정보/버전정보': {name: 'versionInfo'},
   '구독/이용 플랜': {name: 'list', title: '이용 플랜', items: ['플랜 갱신일']},
   '구독/쿠폰 등록': {name: 'list', title: '쿠폰 등록', items: ['선물권 등록']},
 };
@@ -185,7 +188,14 @@ export default function MainTabNavigator({onLogout}: Props) {
       case 'logout':
         return <ConfirmActionPage title="로그아웃" actions={logoutActions} {...common} />;
       case 'notification':
-        return <NotificationSettingsPage {...common} />;
+        return (
+          <NotificationSettingsPage
+            onOpenMarketingTerms={() =>
+              push({name: 'termsDetail', title: '마케팅 정보 활용 동의'})
+            }
+            {...common}
+          />
+        );
       case 'theme':
         return <ThemePage {...common} />;
       case 'template':
@@ -211,6 +221,8 @@ export default function MainTabNavigator({onLogout}: Props) {
       }
       case 'termsDetail':
         return <TermsDetailPage title={route.title} {...common} />;
+      case 'versionInfo':
+        return <VersionInfoPage {...common} />;
       case 'list':
         return (
           <MyPageSubPage

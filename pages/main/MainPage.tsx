@@ -41,33 +41,19 @@ import {
   Image,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { SvgProps } from 'react-native-svg';
 
 import CloverCount from '../../components/common/clover_count';
+import BottomTabBar from '../../components/common/BottomTabBar';
 import StreakCalendarCard from '../../components/tiny-ui/components/StreakCalendarCard';
 import AchievementList from '../../components/tiny-ui/components/AchievementList';
 import BookshelfScreen from '../../components/tiny-ui/components/BookshelfScreen';
 import TodayTracking from '../tracking/TodayTracking';
-import IconHome from '../../assets/images/main/nav-home.svg';
-import IconSearch from '../../assets/images/main/nav-search.svg';
-import IconBook from '../../assets/images/main/nav-book.svg';
-import IconBag from '../../assets/images/main/nav-bag.svg';
-import IconUser from '../../assets/images/main/nav-user.svg';
 
 const ILLUST_W = 319;
 const ILLUST_H = 544;
-const NAV_COLOR = '#2C2C2C';
 
-export type TabKey = 'home' | 'search' | 'book' | 'bag' | 'user';
-
-// 탭바 아이콘 정의 (렌더 크기는 피그마 노드 크기 기준)
-const TABS: { key: TabKey; Icon: React.FC<SvgProps>; w: number; h: number }[] = [
-  { key: 'home', Icon: IconHome, w: 23, h: 23 },
-  { key: 'search', Icon: IconSearch, w: 24, h: 24 },
-  { key: 'book', Icon: IconBook, w: 24, h: 20 },
-  { key: 'bag', Icon: IconBag, w: 24, h: 24 },
-  { key: 'user', Icon: IconUser, w: 23, h: 23 },
-];
+export type { TabKey } from '../../components/common/BottomTabBar';
+import type { TabKey } from '../../components/common/BottomTabBar';
 
 // 일러스트(319 x 544) 안에서 눌러야 하는 영역. 노드 bbox + 여유 패딩.
 type PopupKey = 'streak' | 'achievement' | 'bookshelf' | 'tracking';
@@ -133,7 +119,7 @@ export default function MainPage({ cloverCount = 10, onTabPress }: Props) {
   const PopupComp = activePopup ? POPUPS[activePopup] : null;
 
   return (
-    <SafeAreaView style={styles.root} edges={['top', 'bottom']}>
+    <SafeAreaView style={styles.root} edges={['top']}>
       {/* 헤더: 날짜 + 클로버 뱃지 */}
       <View style={styles.header}>
         <Text style={styles.dateText}>{formatKoreanDate(new Date())}</Text>
@@ -169,19 +155,8 @@ export default function MainPage({ cloverCount = 10, onTabPress }: Props) {
         </View>
       </View>
 
-      {/* 하단 탭바 */}
-      <View style={styles.tabBar}>
-        {TABS.map(({ key, Icon, w, h }) => (
-          <TouchableOpacity
-            key={key}
-            style={styles.tabItem}
-            onPress={() => handleTab(key)}
-            activeOpacity={0.6}
-          >
-            <Icon width={w} height={h} color={NAV_COLOR} />
-          </TouchableOpacity>
-        ))}
-      </View>
+      {/* 하단 탭바 (현재 페이지 연두색) */}
+      <BottomTabBar activeKey="home" onTabPress={handleTab} />
 
       {/* 팝업 (연속 작성일 / 업적 / 책장) */}
       <Modal
@@ -239,17 +214,6 @@ const styles = StyleSheet.create({
   hotspot: {
     position: 'absolute',
     // backgroundColor: 'rgba(255,0,0,0.25)', // 터치 영역 디버그용 (필요시 주석 해제)
-  },
-  tabBar: {
-    height: 67,
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#FFFFFF',
-  },
-  tabItem: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   overlay: {
     flex: 1,

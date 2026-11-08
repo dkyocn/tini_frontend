@@ -5,7 +5,8 @@
  * 구성:
  *  - 헤더: 오늘 날짜(좌) + 클로버 보유 뱃지(우)
  *  - 타이틀 바: 메뉴 아이콘 + "마이페이지"(24) + 검색 아이콘
- *  - 프로필 카드: 프로필 사진(없으면 기본 티니 로고) + 닉네임(40) + 아이디/이메일(16)
+ *  - 프로필 카드 (Figma 35:820, 높이 120): 프로필 사진(없으면 회색 원 + 클로버 티니 기본 이미지, 75)
+ *    + 닉네임(40, Bold) + 아이디/이메일(16). 사진과 글자 간격 14
  *    (탭하면 프로필 화면으로 이동)
  *  - 메뉴 카드 5개: 계정관리 / 설정 / 도움말 / 앱 정보 / 구독  (Figma "마이페이지_수정" 35:428)
  *    (섹션 헤더는 클릭 불가, 하위 항목만 클릭 시 다른 페이지로 이동)
@@ -23,31 +24,17 @@ import {
   Image,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { SvgProps } from 'react-native-svg';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import CloverCount from '../../components/common/clover_count';
+import BottomTabBar from '../../components/common/BottomTabBar';
 import MyPageMenuCard, {
   MenuItem,
 } from '../../components/tiny-ui/components/MyPageMenuCard';
-import TiniLogo from '../../assets/images/tini.svg';
-import IconHome from '../../assets/images/main/nav-home.svg';
-import IconSearch from '../../assets/images/main/nav-search.svg';
-import IconBook from '../../assets/images/main/nav-book.svg';
-import IconBag from '../../assets/images/main/nav-bag.svg';
-import IconUser from '../../assets/images/main/nav-user.svg';
+import DefaultAvatar from '../../assets/images/mypage/profile-default.svg';
 
-const NAV_COLOR = '#2C2C2C';
 
-export type TabKey = 'home' | 'search' | 'book' | 'bag' | 'user';
-
-const TABS: { key: TabKey; Icon: React.FC<SvgProps>; w: number; h: number }[] = [
-  { key: 'home', Icon: IconHome, w: 23, h: 23 },
-  { key: 'search', Icon: IconSearch, w: 24, h: 24 },
-  { key: 'book', Icon: IconBook, w: 24, h: 20 },
-  { key: 'bag', Icon: IconBag, w: 24, h: 24 },
-  { key: 'user', Icon: IconUser, w: 23, h: 23 },
-];
+import type { TabKey } from '../../components/common/BottomTabBar';
 
 function formatKoreanDate(d: Date): string {
   return `${d.getFullYear()}년 ${d.getMonth() + 1}월 ${d.getDate()}일`;
@@ -56,24 +43,20 @@ function formatKoreanDate(d: Date): string {
 type Section = {
   title: string;
   items: string[];
-  /** Figma 카드 높이 (섹션마다 고정) */
-  height: number;
 };
 
 const SECTIONS: Section[] = [
   {
     title: '계정관리',
-    items: ['로그인 계정', '기기정보 삭제', '로그아웃', '알림 설정', '마케팅 정보 활용 동의'],
-    height: 320,
+    items: ['로그인 계정', '기기정보 삭제', '로그아웃', '알림 설정'],
   },
   {
     title: '설정',
     items: ['테마', '템플릿 설정(시간 설정)', '시스템 설정', '언어', '앱 아이콘'],
-    height: 320,
   },
-  { title: '도움말', items: ['FAQ', '공지사항', '문의'], height: 250 },
-  { title: '앱 정보', items: ['상세 약관', '라이센스', '개인정보 처리 방침'], height: 250 },
-  { title: '구독', items: ['이용 플랜', '쿠폰 등록', '무료 체험 광고'], height: 250 },
+  { title: '도움말', items: ['FAQ', '공지사항', '문의'] },
+  { title: '앱 정보', items: ['상세 약관', '라이센스', '개인정보 처리 방침', '버전정보'] },
+  { title: '구독', items: ['이용 플랜', '쿠폰 등록', '무료 체험 광고'] },
 ];
 
 type Props = {
@@ -128,7 +111,7 @@ export default function MyPage({
     }));
 
   return (
-    <SafeAreaView style={styles.root} edges={['top', 'bottom']}>
+    <SafeAreaView style={styles.root} edges={['top']}>
       {/* 헤더: 날짜 + 클로버 뱃지 */}
       <View style={styles.header}>
         <Text style={styles.dateText}>{formatKoreanDate(new Date())}</Text>
@@ -151,13 +134,13 @@ export default function MyPage({
           disabled={!onProfilePress}
           onPress={onProfilePress}
         >
-          <View style={styles.avatar}>
-            {profileImageUri ? (
+          {profileImageUri ? (
+            <View style={styles.avatar}>
               <Image source={{ uri: profileImageUri }} style={styles.avatarImage} />
-            ) : (
-              <TiniLogo width={55} height={55} />
-            )}
-          </View>
+            </View>
+          ) : (
+            <DefaultAvatar width={75} height={75} />
+          )}
           <View style={styles.profileTextBlock}>
             <Text style={styles.nickname}>{displayNickname}</Text>
             <Text style={styles.userId}>{displayUserId}</Text>
@@ -170,26 +153,12 @@ export default function MyPage({
             key={section.title}
             title={section.title}
             items={buildItems(section)}
-            minHeight={section.height}
           />
         ))}
-
-        <Text style={styles.version}>ver 2.0</Text>
       </ScrollView>
 
-      {/* 하단 탭바 */}
-      <View style={styles.tabBar}>
-        {TABS.map(({ key, Icon, w, h }) => (
-          <TouchableOpacity
-            key={key}
-            style={styles.tabItem}
-            onPress={() => onTabPress?.(key)}
-            activeOpacity={0.6}
-          >
-            <Icon width={w} height={h} color={NAV_COLOR} />
-          </TouchableOpacity>
-        ))}
-      </View>
+      {/* 하단 탭바 (현재 페이지 연두색) */}
+      <BottomTabBar activeKey="user" onTabPress={onTabPress} />
     </SafeAreaView>
   );
 }
@@ -270,23 +239,7 @@ const styles = StyleSheet.create({
   userId: {
     fontFamily: 'Inter',
     fontSize: 16,
+    lineHeight: 19,
     color: '#000000',
-  },
-  version: {
-    alignSelf: 'center',
-    fontFamily: 'Inter',
-    fontSize: 16,
-    color: '#000000',
-  },
-  tabBar: {
-    height: 67,
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#FFFFFF',
-  },
-  tabItem: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
 });
